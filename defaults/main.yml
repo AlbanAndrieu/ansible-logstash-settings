@@ -1,0 +1,13 @@
+---
+logstash_monitor_local_syslog: yes
+logstash_monitor_jenkins_enabled: no
+logstash_monitor_nexus_enabled: no
+logstash_monitor_apache_enabled: no
+logstash_monitor_nginx_enabled: no
+logstash_monitor_elasticsearch_enabled: no
+logstash_monitor_miscellaneous_enabled: no
+logstash_monitor_application_enabled: no
+logstash_monitor_log4j_enabled: no
+
+jenkins_home: "/var/lib/jenkins"
+kgr_home: "/thomsonreuters/home/kgr"

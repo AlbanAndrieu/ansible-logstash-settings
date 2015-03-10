@@ -1,0 +1,139 @@
+---
+
+#TODO clean /etc/logstash/conf.d/
+#sudo rm -f /etc/logstash/conf.d/*
+- name: Remove previous configuration
+  file: path=/etc/logstash/conf.d/ state=directory state=absent recurse=yes
+
+- name: Create configuration directory
+  file: path=/etc/logstash/conf.d/ state=directory
+
+- name: Create Logstash configuration files.
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/logstash/conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - 01-lumberjack-input.conf
+    - 10-syslog.conf
+    - 30-lumberjack-output.conf
+  notify: restart logstash
+
+- name: Create Logstash configuration file for local syslog.
+  template:
+    src: 02-local-syslog-input.conf.j2
+    dest: /etc/logstash/conf.d/02-local-syslog-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_local_syslog
+  notify: restart logstash
+
+- name: Create Logstash configuration file for jenkins-server syslog.
+  template:
+    src: 03-local-jenkins-server-input.conf.j2
+    dest: /etc/logstash/conf.d/03-local-jenkins-server-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_jenkins_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for jenkins syslog.
+  template:
+    src: 03-local-jenkins-input.conf.j2
+    dest: /etc/logstash/conf.d/03-local-jenkins-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_jenkins_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for nexus yslog.
+  template:
+    src: 03-local-nexus-input.conf.j2
+    dest: /etc/logstash/conf.d/03-local-nexus-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_nexus_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for apache syslog.
+  template:
+    src: 04-local-apache-input.conf.j2
+    dest: /etc/logstash/conf.d/04-local-apache-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_apache_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for nginx syslog.
+  template:
+    src: 04-local-nginx-input.conf.j2
+    dest: /etc/logstash/conf.d/04-local-nginx-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_nginx_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for elasticsearch syslog.
+  template:
+    src: 05-local-elasticsearch-input.conf.j2
+    dest: /etc/logstash/conf.d/05-local-elasticsearch-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_elasticsearch_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for miscellaneous log.
+  template:
+    src: 05-local-miscellaneous-input.conf.j2
+    dest: /etc/logstash/conf.d/05-local-miscellaneous-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_miscellaneous_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for application log.
+  template:
+    src: 06-local-application-input.conf.j2
+    dest: /etc/logstash/conf.d/06-local-application-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_application_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for log4j log.
+  template:
+    src: 07-local-log4j-input.conf.j2
+    dest: /etc/logstash/conf.d/07-local-log4j-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_log4j_enabled
+  notify: restart logstash
+
+#sudo chmod 755 /var/log/upstart
+#sudo chmod -R 755 /var/log/*
+#sudo chmod 755 /var/log/upstart/*
+#sudo chmod 755 /var/log/zabbix/zabbix_agentd.log
+#sudo chmod 777 /var/log/upstart/docker.log
+#sudo find /var/log/ -type f -name '*\.log' | xargs sudo chmod 755 $1
+
+- name: Update log rights
+  file: path=/var/log/ state=directory recurse=yes mode=0755
+#  owner={{ logstash_user }} group={{ logstash_group }}
+
+- name: Update log files rights
+  action: command find /var/log/ -type f -name '*\.log' | xargs sudo chmod 755 $1
+
+- name: Ensure Logstash is started and enabled on boot.
+  service: name=logstash state=started enabled=yes

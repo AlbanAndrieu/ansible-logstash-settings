@@ -1,0 +1,60 @@
+---
+#dependencies: []
+dependencies:
+  - { role: geerlingguy.logstash }
+
+galaxy_info:
+  author: Alban Andrieu
+  description: A role for installing logstash configuration
+  company: Nabla
+  license: GPLv3
+  min_ansible_version: 1.6.3
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+    - lucid
+    - maverick
+    - natty
+    - oneiric
+    - precise
+    - quantal
+    - raring
+    - saucy
+    - trusty
+  categories:
+  - development
+
+ansigenome_info:
+  galaxy_id: '0000'
+  galaxy_user: 'alban.andrieu'
+  galaxy_name: 'logstash-settings'
+
+  travis: True
+
+  authors:
+    - name:  'Alban Andrieu'
+      url: 'fr.linkedin.com/in/nabla/'
+      email: 'alban.andrieu@free.fr'
+      twitter: 'AlbanAndrieu'
+      github: 'AlbanAndrieu'
+
+  synopsis: |
+    Ensures that logstash is properly installed and configured on `Ubuntu` using `Ansible` script.
+    This ``Simple`` role allows you to configure [Logstash](http://www.elasticsearch.org/overview/logstash/) with basic configuration.
+
+    Goal of this role is to gather as much logstash scripts as possible. So do not hesitate to add your own and to contribute.
+
+    Note that this role installs a syslog grok pattern by default; if you want to add more filters, please add them inside the `/etc/logstash/conf.d/` directory. As an example, you could create a file named `13-myapp.conf` with the appropriate grok filter and restart logstash to start using it. Test your grok regex using the [Grok Debugger](http://grokdebug.herokuapp.com/).
+
+    ###Requirements
+
+    Though other methods are possible, this role is made to work with Elasticsearch as a backend for storing log messages.
+
+  usage: |
+    Run the following command :
+
+         `ansible-playbook -i hosts -c local -v logstash.yml -vvvv --ask-sudo-pass | tee setup.log`
+
+  #custom: |
+  #  Any custom output you want after the usage section..

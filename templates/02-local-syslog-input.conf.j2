@@ -1,0 +1,13 @@
+#{{ ansible_managed }}
+input {
+
+  file {
+    type => "syslog"  
+    path => "/var/log/messages"
+  }
+    
+  file {
+    type => "syslog"  
+    path => "{{ logstash_local_syslog_path }}"  
+  }
+}
