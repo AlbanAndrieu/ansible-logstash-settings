@@ -26,7 +26,7 @@ galaxy_info:
   - development
 
 ansigenome_info:
-  galaxy_id: '0000'
+  galaxy_id: '3083'
   galaxy_user: 'alban.andrieu'
   galaxy_name: 'logstash-settings'
 
@@ -43,7 +43,8 @@ ansigenome_info:
     Ensures that logstash is properly installed and configured on `Ubuntu` using `Ansible` script.
     This ``Simple`` role allows you to configure [Logstash](http://www.elasticsearch.org/overview/logstash/) with basic configuration.
 
-    Goal of this role is to gather as much logstash scripts as possible. So do not hesitate to add your own and to contribute.
+    Goal of this role is to gather as much logstash scripts as possible.
+    So do not hesitate to add your own and to contribute.
 
     Note that this role installs a syslog grok pattern by default; if you want to add more filters, please add them inside the `/etc/logstash/conf.d/` directory. As an example, you could create a file named `13-myapp.conf` with the appropriate grok filter and restart logstash to start using it. Test your grok regex using the [Grok Debugger](http://grokdebug.herokuapp.com/).
 

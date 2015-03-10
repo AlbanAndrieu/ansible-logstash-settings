@@ -1,54 +1,69 @@
-# Ansible Role: Logstash
+## alban.andrieu.logstash-settings
 
-[![Build Status](https://travis-ci.org/geerlingguy/ansible-role-logstash.svg?branch=master)](https://travis-ci.org/geerlingguy/ansible-role-logstash)
+[![Travis CI](http://img.shields.io/travis/AlbanAndrieu/ansible-logstash-settings.svg?style=flat)](http://travis-ci.org/AlbanAndrieu/ansible-logstash-settings) [![Branch](http://img.shields.io/github/tag/AlbanAndrieu/ansible-logstash-settings.svg?style=flat-square)](https://github.com/AlbanAndrieu/ansible-logstash-settings/tree/master) [![Donate](https://img.shields.io/gratipay/AlbanAndrieu.svg?style=flat)](https://www.gratipay.com/AlbanAndrieu)  [![Ansible Galaxy](http://img.shields.io/badge/galaxy-alban.andrieu.logstashsettings-blue.svg?style=flat)](https://galaxy.ansible.com/list#/roles/3083) [![Platforms](http://img.shields.io/badge/platforms-ubuntu-lightgrey.svg?style=flat)](#)
 
-An Ansible Role that installs Logstash on RedHat/CentOS Debian/Ubuntu.
+Ensures that logstash is properly installed and configured on `Ubuntu` using `Ansible` script.
+This ``Simple`` role allows you to configure [Logstash](http://www.elasticsearch.org/overview/logstash/) with basic configuration.
 
-Note that this role installs a syslog grok pattern by default; if you want to add more filters, please add them inside the `/etc/logstash/conf.d/` directory. As an example, you could create a file named `11-nginx-access.conf` with the appropriate grok filter and restart logstash to start using it. Test your grok regex using the [Grok Debugger](http://grokdebug.herokuapp.com/).
+Goal of this role is to gather as much logstash scripts as possible.
+So do not hesitate to add your own and to contribute.
 
-## Requirements
+Note that this role installs a syslog grok pattern by default; if you want to add more filters, please add them inside the `/etc/logstash/conf.d/` directory. As an example, you could create a file named `13-myapp.conf` with the appropriate grok filter and restart logstash to start using it. Test your grok regex using the [Grok Debugger](http://grokdebug.herokuapp.com/).
+
+###Requirements
 
 Though other methods are possible, this role is made to work with Elasticsearch as a backend for storing log messages.
 
-## Role Variables
+### Installation
 
-Available variables are listed below, along with default values (see `defaults/main.yml`):
+This role requires at least Ansible `v1.6.3`. 
 
-    logstash_listen_port_tcp: 5000
-    logstash_listen_port_udp: 5000
+To install it, run:
 
-The TCP and UDP ports over which logstash will listen for syslog messages.
+    ansible-galaxy install alban.andrieu.logstash-settings
 
-    logstash_elasticsearch_host: localhost
+### Role dependencies
 
-The host on which Elasticsearch resides.
+- `geerlingguy.logstash`
 
-    logstash_ssl_dir: /etc/pki/logstash
-    logstash_ssl_certificate_file: logstash-forwarder-example.crt
-    logstash_ssl_key_file: logstash-forwarder-example.key
+### Role variables
 
-SSL configuration for Logstash to accept requests from logstash-forwarder running on remote hosts. **Security note**: On production or public-facing (e.g. any non-test) servers, you should create your own key/certificate pair and use that instead of the included default! You can use OpenSSL to create the key and certificate files, with a command like the following: `sudo openssl req -x509 -batch -nodes -days 3650 -newkey rsa:2048 -keyout logstash-forwarder.key -out logstash-forwarder.crt`.
+List of default variables available in the inventory:
 
-    logstash_local_syslog_path: /var/log/syslog
-    logstash_monitor_local_syslog: true
+```yaml
+        ---
+    logstash_monitor_local_syslog: yes
+    logstash_monitor_jenkins_enabled: no
+    logstash_monitor_nexus_enabled: no
+    logstash_monitor_apache_enabled: no
+    logstash_monitor_nginx_enabled: no
+    logstash_monitor_elasticsearch_enabled: no
+    logstash_monitor_miscellaneous_enabled: no
+    logstash_monitor_application_enabled: no
+    logstash_monitor_log4j_enabled: no
+    
+    jenkins_home: "/var/lib/jenkins"
+    kgr_home: "/thomsonreuters/home/kgr"
+```
 
-Whether configuration for local syslog file (defined as `logstash_local_syslog_path`) should be added to logstash. Set this to `false` if you are monitoring the local syslog differently, or if you don't care about the local syslog file. Other local logs can be added by your own configuration files placed inside `/etc/logstash/conf.d`.
 
-## Dependencies
+### Detailed usage guide
 
-  - geerlingguy.elasticsearch
+Run the following command :
 
-## Example Playbook
+     `ansible-playbook -i hosts -c local -v logstash.yml -vvvv --ask-sudo-pass | tee setup.log`
 
-    - hosts: search
-      roles:
-        - { role: geerlingguy.elasticsearch }
-        - { role: geerlingguy.logstash }
 
-## License
+### Authors and license
 
-MIT / BSD
+`alban.andrieu.logstash-settings` role was written by:
+- [Alban Andrieu](fr.linkedin.com/in/nabla/) | [e-mail](mailto:alban.andrieu@free.fr) | [Twitter](https://twitter.com/AlbanAndrieu) | [GitHub](https://github.com/AlbanAndrieu)
+- License: [GPLv3](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 
-## Author Information
+### Feedback, bug-reports, requests, ...
 
-This role was created in 2014 by [Jeff Geerling](http://jeffgeerling.com/), author of [Ansible for DevOps](http://ansiblefordevops.com/).
+Are [welcome](https://github.com/AlbanAndrieu/ansible-logstash-settings/issues)!
+
+***
+
+README generated by [Ansigenome](https://github.com/nickjj/ansigenome/).
