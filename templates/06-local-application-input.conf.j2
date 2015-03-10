@@ -10,43 +10,103 @@ input {
     type => "log4j"
     path => "{{ kgr_home }}/log/RTM.log"
   }
-  
+
   file {
     type => "log4j"
     path => "{{ kgr_home }}/log/kgrAdapterLogger.log"
-  }  
-  
+  }
+
   file {
     type => "log4j"
     path => "{{ kgr_home }}/log/RiskInsight.log"
-  }    
-  
+  }
+
+  file {
+    type => "log4j"
+    path => "{{ kgr_home }}/log/startRTM.stdout.log"
+  }
+
+  file {
+    type => "log4j-lcms"
+    path => "{{ kgr_home }}/dist/log/LCMS_Debug.log"
+  }
+
+  file {
+    type => "tomcat"
+    path => "{{ kgr_home }}/log/catalina.out"
+  }
+
+  file {
+    type => "tomcat"
+    path => "{{ kgr_home }}/data/J2EE/TomcatConfigs/logs/*.out"
+  }
+
+  file {
+    type => "jetty"
+    path => "{{ kgr_home }}/log/*.request.log"
+  }
+
   file {
     type => "sybase"
     path => "/thomsonreuters/sybase/kplus/ASE-15_0/install/KPLUS.log"
-  }      
-  
+  }
+
   file {
     type => "sybase"
     path => "/thomsonreuters/sybase/kplus/ASE-15_0/install/KPLUS.log"
-  }    
-  
+  }
+
   file {
     type => "sybase"
     path => "/thomsonreuters/sybase/kgr/ASE-15_0/install/KGR.log"
-  }     
-     
+  }
+
 #/thomsonreuters/sybase/kplus/ASE-15_0/install/RUN_KPLUS
 # Error log path: /thomsonreuters/sybase/kplus/ASE-15_0/install/KPLUS.log
 #$SYBASE/ASE-15_0/install/ start scripts defines sybase log path
 
   file {
-    type => "log4cxx"
+    type => "log4cxx-special1"
     path => "{{ kgr_home }}/log/KGRAdapter_stdout.log"
-  }    
-  
+  }
+
+#KNS_PID:*.log
+#KTS_PID:*.log
+#KRMS.log
+#KIS.log
+#KGRAdapterServer.log
+#RKDBI.log
+#KGRReportBatch.log
+#KGRStartBatch.log
+#RMDSExtractionTools.log
+
+  file {
+    type => "log4cxx-special2"
+    path => "{{ kgr_home }}/log/KGRTaskServer_master_1_DBTraceFile.log  "
+  }
+
+  file {
+    type => "log4cxx"
+    path => "{{ kgr_home }}/log/KGRImportServer_stdout.log"
+  }
+
+  file {
+    type => "log4cxx"
+    path => "{{ kgr_home }}/log/KGRRateManagerServer_stdout.log"
+  }
+
+  file {
+    type => "log4cxx"
+    path => "{{ kgr_home }}/log/KGRServer_master_stdout.log"
+  }
+
+  file {
+    type => "log4cxx"
+    path => "{{ kgr_home }}/log/KGRTaskServer_1_stdout.log"
+  }
+
 #  file {
-#    type => "log4j"  
+#    type => "log4j"
 #    path => "{{ kgr_home }}/dist/log/*.log"
 #  }
 
@@ -66,10 +126,10 @@ filter {
   if [type] == "log4j" {
     multiline {
       pattern => "^%{TIMESTAMP_ISO8601}%{SPACE}%{LOGLEVEL:level}%{SPACE}"
-      negate => true     
+      negate => true
       what => "previous"
     }
-    mutate { replace => { type => "application" } }  
+    mutate { replace => { type => "application" } }
 #    add_field => [ "level", "%{@level}" ]
 
     ## Filters below here should be consistent for all log formats.
@@ -77,40 +137,75 @@ filter {
     #if [loglevel] == "DEBUG" {
     #  drop {}
     #}
-  
+
   }
-   
-  if [type] == "log4cxx" {
+
+  if [type] == "log4cxx-special1" {
     multiline {
       pattern => "^%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}%{SPACE}GMT%{SPACE}\+0"
-      negate => true     
+      negate => true
       what => "previous"
-    }   
-    mutate { replace => { type => "application" } }     
+    }
+    mutate { replace => { type => "application" } }
   }
-  
+
+  if [type] == "log4cxx" {
+    multiline {
+      pattern => "^%{YEAR}-%{MONTHNUM}-%{MONTHDAY}%{SPACE}%{TIME},%{NUMBER:num1}-%{BASE16NUM}-%{LOGLEVEL:level}%{SPACE}-"
+      negate => true
+      what => "previous"
+    }
+    mutate { replace => { type => "application" } }
+  }
+
   if [type] == "sybase" {
     multiline {
       pattern => "^%{NUMBER:num1}:%{NUMBER:num2}:%{NUMBER:num3}:%{NUMBER:num4}:%{YEAR}/%{MONTHNUM}/%{MONTHDAY}%{SPACE}%{TIME}"
-      negate => true     
+      negate => true
       what => "previous"
-    }   
-#    mutate { replace => { type => "application" } }     
-  }  
+    }
+#    mutate { replace => { type => "application" } }
+  }
+
+  if [type] == "tomcat" {
+
+   if [path] =~ "access" {
+      mutate { replace => { type => "tomcat_access" } }
+      grok {
+        match => { "message" => "%{COMBINEDAPACHELOG}" }
+      }
+      date {
+        match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z", "MMM dd, yyyy HH:mm:ss a" ]
+      }
+	  # Filters below here should be consistent for all log formats.
+	  # Remove 200 logs to reduce the amount of data that needs to be processed.
+	  #if [response] == "200" {
+	  #  drop {}
+	  #}
+    } else if [path] =~ "error" {
+      mutate { replace => { type => "tomcat_error" } }
+    } else {
+      mutate { replace => { type => "random_logs" } }
+    }
+
+  }
 }
+
+#CATALINA_DATESTAMP %{MONTH} %{MONTHDAY}, 20%{YEAR} %{HOUR}:?%{MINUTE}(?::?%{SECOND}) (?:AM|PM)
+#TOMCAT_DATESTAMP 20%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:?%{MINUTE}(?::?%{SECOND}) %{ISO8601_TIMEZONE}
 
 #filter {
 #  grok {
 ##    type => "log4j"
-#    add_tag => [ "ApplicationName" ]         
+#    add_tag => [ "ApplicationName" ]
 #    add_tag => [ "level_%{level}" ]
 #    match => [ "message", "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{LOGLEVEL:level}%{SPACE}%{SYSLOG5424SD}%{SPACE}%{DATA:service}%{SPACE}%{JAVACLASS}%{GREEDYDATA:message}" ]
 ##    match => [ "message", "%{TIMESTAMP_ISO8601:logdate}%{SPACE}\[%{LOGLEVEL:level}%{SPACE}]%{SPACE}\[%{DATA:user}]%{SPACE}\[%{DATA:thread}]%{SPACE}\[%{DATA:classname}]%{SPACE}%{GREEDYDATA:message}" ]
 #  }
-#  
+#
 ##  date {
 ##     logdate => "yyyy-MM-dd HH:mm:ss,SSS"
 ##  }
-#    
-#  mutate { replace => { type => "application" } }  
+#
+#  mutate { replace => { type => "application" } }
 #}
