@@ -34,6 +34,7 @@ jenkins_home: "/var/lib/jenkins"
 application_dir: ""
 application_user: "{{ user }}"
 application_home: "{{ application_dir }}/home/{{ application_user }}"
+application_name: "nabla"
 sybase_dir: "{{ application_dir }}/sybase"
 sybase_version: "ASE-15_0"
 

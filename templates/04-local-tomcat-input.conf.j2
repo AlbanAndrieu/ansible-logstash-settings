@@ -11,6 +11,11 @@ input {
     path => "{{ tomcat_catalina_log_dir }}/*.out"
   }
 
+  file {
+    type => "tomcat"
+    path => "{{ tomcat_catalina_log_dir }}/*.txt"
+  }
+  
 }
 
 filter {
@@ -20,7 +25,8 @@ filter {
    if [path] =~ "access" {
       mutate { replace => { type => "tomcat_access" } }
       grok {
-        match => { "message" => "%{COMBINEDAPACHELOG}" }
+#        match => { "message" => "%{COMBINEDAPACHELOG}" }
+         match => { "message" => "%{IPORHOST:clientip} - %{DATA:data1}-%{DATA:data2} \[%{HTTPDATE:timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response}" }
       }
       date {
         match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z", "MMM dd, yyyy HH:mm:ss a" ]
@@ -32,8 +38,8 @@ filter {
 	  #}
     } else if [path] =~ "error" {
       mutate { replace => { type => "tomcat_error" } }
-    } else {
-      mutate { replace => { type => "random_logs" } }
+#    } else {
+#      mutate { replace => { type => "random_logs" } }
     }
 
   }
