@@ -15,7 +15,7 @@ filter {
   if [type] == "jetty" {
 
     grok {
-      match => { "message" => "%{IPORHOST:clientip} - %{DATA:data1} - %{DATA:data2} \[%{HTTPDATE:timestamp}\] \"%{DATA:rawrequest}\" %{NUMBER:response}" }
+      match => { "message" => "%{IPORHOST:clientip} - %{DATA:data1} - %{DATA:data2} \[%{HTTPDATE:timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response}" }
     }
     date {
       match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z", "MMM dd, yyyy HH:mm:ss a" ]
