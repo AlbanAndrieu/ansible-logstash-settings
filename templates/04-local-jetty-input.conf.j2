@@ -15,21 +15,14 @@ filter {
   if [type] == "jetty" {
 
     grok {
-#      match => { "message" => "%{IPORHOST:clientip} -  -  \[%{MONTHDAY}/%{MONTH}/%{YEAR}:%{TIME}%{SPACE}+%{NUMBER:num1}\]%{SPACE}"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{NUMBER:bytes}|-)" }
-      match => { "message" => "%{IPORHOST:clientip} - %{DATA:data1} - %{DATA:data2} \[%{HTTPDATE:timestamp}\] "(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{NUMBER:bytes}|-)" }
+      match => { "message" => "%{IPORHOST:clientip} - %{DATA:data1} - %{DATA:data2} \[%{HTTPDATE:timestamp}\] \"%{DATA:rawrequest}\" %{NUMBER:response}" }
     }
     date {
       match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z", "MMM dd, yyyy HH:mm:ss a" ]
     }
-      
-#  grok {
-##    add_tag => [ "ApplicationName" ]
-#    add_tag => [ "level_%{level}" ]
-#    match => [ "message", "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{LOGLEVEL:level}%{SPACE}%{SYSLOG5424SD}%{SPACE}%{DATA:service}%{SPACE}%{JAVACLASS}%{GREEDYDATA:message}" ]
-##    match => [ "message", "%{TIMESTAMP_ISO8601:logdate}%{SPACE}\[%{LOGLEVEL:level}%{SPACE}]%{SPACE}\[%{DATA:user}]%{SPACE}\[%{DATA:thread}]%{SPACE}\[%{DATA:classname}]%{SPACE}%{GREEDYDATA:message}" ]
-#  }
 
   }
 }
 
 #COMMONAPACHELOG %{IPORHOST:clientip} %{USER:ident} %{USER:auth} \[%{HTTPDATE:timestamp}\] "(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{NUMBER:bytes}|-)
+#      match => { "message" => "%{IPORHOST:clientip} -  -  \[%{MONTHDAY}/%{MONTH}/%{YEAR}:%{TIME}%{SPACE}+%{NUMBER:num1}\]%{SPACE}"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{NUMBER:bytes}|-)" }
