@@ -24,9 +24,16 @@ shell_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have 
 logstash_change_log_dir: "/var/log/"
 logstash_change_log_dir_enabled: no
 
+#tomcat_catalina_home_dir: "/usr/share/tomcat7"
+tomcat_catalina_base_dir: "/var/lib/tomcat7"
+
+tomcat_catalina_log_dir: "{{ tomcat_catalina_base_dir }}/logs"
+tomcat_catalina_out: "{{ tomcat_catalina_log_dir }}/catalina.out"
+
 jenkins_home: "/var/lib/jenkins"
-application_dir: "/thomsonreuters"
-application_home: "{{ application_dir }}/home/kgr"
+application_dir: ""
+application_user: "{{ user }}"
+application_home: "{{ application_dir }}/home/{{ application_user }}"
 sybase_dir: "{{ application_dir }}/sybase"
 sybase_version: "ASE-15_0"
 

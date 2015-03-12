@@ -1,0 +1,35 @@
+#{{ ansible_managed }}
+input {
+
+#exec { command => "CURRENT_LOGFILE=$(ls -rt /srv/*-jetty-*/logs/*stderrout.log | tail -1); logtail2 -o /tmp/$(basename $CURRENT_LOGFILE).offset $CURRENT_LOGFILE" interval => "30" }
+
+  file {
+    type => "jetty"
+    path => "{{ application_home }}/log/*.request.log"
+  }
+
+}
+
+filter {
+
+  if [type] == "jetty" {
+
+    grok {
+#      match => { "message" => "%{IPORHOST:clientip} -  -  \[%{MONTHDAY}/%{MONTH}/%{YEAR}:%{TIME}%{SPACE}+%{NUMBER:num1}\]%{SPACE}"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{NUMBER:bytes}|-)" }
+      match => { "message" => "%{IPORHOST:clientip} - %{DATA:data1} - %{DATA:data2} \[%{HTTPDATE:timestamp}\] "(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{NUMBER:bytes}|-)" }
+    }
+    date {
+      match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z", "MMM dd, yyyy HH:mm:ss a" ]
+    }
+      
+#  grok {
+##    add_tag => [ "ApplicationName" ]
+#    add_tag => [ "level_%{level}" ]
+#    match => [ "message", "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{LOGLEVEL:level}%{SPACE}%{SYSLOG5424SD}%{SPACE}%{DATA:service}%{SPACE}%{JAVACLASS}%{GREEDYDATA:message}" ]
+##    match => [ "message", "%{TIMESTAMP_ISO8601:logdate}%{SPACE}\[%{LOGLEVEL:level}%{SPACE}]%{SPACE}\[%{DATA:user}]%{SPACE}\[%{DATA:thread}]%{SPACE}\[%{DATA:classname}]%{SPACE}%{GREEDYDATA:message}" ]
+#  }
+
+  }
+}
+
+#COMMONAPACHELOG %{IPORHOST:clientip} %{USER:ident} %{USER:auth} \[%{HTTPDATE:timestamp}\] "(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})" %{NUMBER:response} (?:%{NUMBER:bytes}|-)

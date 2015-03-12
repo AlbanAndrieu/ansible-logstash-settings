@@ -81,6 +81,26 @@
   when: logstash_monitor_nginx_enabled
   notify: restart logstash
 
+- name: Create Logstash configuration file for tomcat syslog.
+  template:
+    src: 04-local-tomcat-input.conf.j2
+    dest: /etc/logstash/conf.d/04-local-tomcat-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_tomcat_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for jetty syslog.
+  template:
+    src: 04-local-jetty-input.conf.j2
+    dest: /etc/logstash/conf.d/04-local-jetty-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_jetty_enabled
+  notify: restart logstash
+
 - name: Create Logstash configuration file for elasticsearch syslog.
   template:
     src: 05-local-elasticsearch-input.conf.j2
@@ -130,7 +150,7 @@
     mode: 0644
   when: logstash_monitor_sybase_enabled
   notify: restart logstash
-  
+
 #sudo chmod 755 /var/log/upstart
 #sudo chmod -R 755 /var/log/*
 #sudo chmod 755 /var/log/upstart/*

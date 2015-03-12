@@ -1,0 +1,43 @@
+#{{ ansible_managed }}
+input {
+
+  file {
+    type => "tomcat"
+    path => "{{ tomcat_catalina_out }}"
+  }
+
+  file {
+    type => "tomcat"
+    path => "{{ tomcat_catalina_log_dir }}/*.out"
+  }
+
+}
+
+filter {
+
+  if [type] == "tomcat" {
+
+   if [path] =~ "access" {
+      mutate { replace => { type => "tomcat_access" } }
+      grok {
+        match => { "message" => "%{COMBINEDAPACHELOG}" }
+      }
+      date {
+        match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z", "MMM dd, yyyy HH:mm:ss a" ]
+      }
+	  # Filters below here should be consistent for all log formats.
+	  # Remove 200 logs to reduce the amount of data that needs to be processed.
+	  #if [response] == "200" {
+	  #  drop {}
+	  #}
+    } else if [path] =~ "error" {
+      mutate { replace => { type => "tomcat_error" } }
+    } else {
+      mutate { replace => { type => "random_logs" } }
+    }
+
+  }
+}
+
+#CATALINA_DATESTAMP %{MONTH} %{MONTHDAY}, 20%{YEAR} %{HOUR}:?%{MINUTE}(?::?%{SECOND}) (?:AM|PM)
+#TOMCAT_DATESTAMP 20%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:?%{MINUTE}(?::?%{SECOND}) %{ISO8601_TIMEZONE}
