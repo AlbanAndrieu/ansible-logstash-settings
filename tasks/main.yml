@@ -3,7 +3,7 @@
 #TODO clean /etc/logstash/conf.d/
 #sudo rm -f /etc/logstash/conf.d/*
 - name: Remove previous configuration
-  file: path=/etc/logstash/conf.d/ state=directory state=absent recurse=yes
+  action: command /bin/rm -Rf /etc/logstash/conf.d/
 
 - name: Create configuration directory
   file: path=/etc/logstash/conf.d/ state=directory
@@ -121,6 +121,16 @@
   when: logstash_monitor_log4j_enabled
   notify: restart logstash
 
+- name: Create Logstash configuration file for sybase log.
+  template:
+    src: 08-local-sybase-input.conf.j2
+    dest: /etc/logstash/conf.d/08-local-sybase-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_sybase_enabled
+  notify: restart logstash
+  
 #sudo chmod 755 /var/log/upstart
 #sudo chmod -R 755 /var/log/*
 #sudo chmod 755 /var/log/upstart/*
@@ -129,11 +139,23 @@
 #sudo find /var/log/ -type f -name '*\.log' | xargs sudo chmod 755 $1
 
 - name: Update log rights
-  file: path=/var/log/ state=directory recurse=yes mode=0755
+  file: path={{ logstash_change_log_dir }} state=directory recurse=yes mode=0755
 #  owner={{ logstash_user }} group={{ logstash_group }}
 
-- name: Update log files rights
-  action: command find /var/log/ -type f -name '*\.log' | xargs sudo chmod 755 $1
+- name: log | Configure change_directory_rights.sh file
+  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and logstash_change_log_dir_enabled
+  template:
+    src: change_directory_rights.sh.j2
+    dest: '{{ shell_dir_tmp }}/change_directory_rights.sh'
+    owner: '{{ shell_owner }}'
+    group: '{{ shell_group }}'
+    mode: 0755
+  tags: log
+
+- name: log | Update log files rights
+  action: shell '{{ shell_dir_tmp }}/change_directory_rights.sh'
+  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and logstash_change_log_dir_enabled
+  tags: log
 
 - name: Ensure Logstash is started and enabled on boot.
   service: name=logstash state=started enabled=yes

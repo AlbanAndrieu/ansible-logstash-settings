@@ -3,71 +3,52 @@ input {
 
   file {
     type => "log4j"
-    path => "{{ kgr_home }}/log/KGRWebServer.log"
+    path => "{{ application_home }}/log/KGRWebServer.log"
   }
 
   file {
     type => "log4j"
-    path => "{{ kgr_home }}/log/RTM.log"
+    path => "{{ application_home }}/log/RTM.log"
   }
 
   file {
     type => "log4j"
-    path => "{{ kgr_home }}/log/kgrAdapterLogger.log"
+    path => "{{ application_home }}/log/kgrAdapterLogger.log"
   }
 
   file {
     type => "log4j"
-    path => "{{ kgr_home }}/log/RiskInsight.log"
+    path => "{{ application_home }}/log/RiskInsight.log"
   }
 
   file {
     type => "log4j"
-    path => "{{ kgr_home }}/log/startRTM.stdout.log"
+    path => "{{ application_home }}/log/startRTM.stdout.log"
   }
 
   file {
     type => "log4j-lcms"
-    path => "{{ kgr_home }}/dist/log/LCMS_Debug.log"
+    path => "{{ application_home }}/dist/log/LCMS_Debug.log"
   }
 
   file {
     type => "tomcat"
-    path => "{{ kgr_home }}/log/catalina.out"
+    path => "{{ application_home }}/log/catalina.out"
   }
 
   file {
     type => "tomcat"
-    path => "{{ kgr_home }}/data/J2EE/TomcatConfigs/logs/*.out"
+    path => "{{ application_home }}/data/J2EE/TomcatConfigs/logs/*.out"
   }
 
   file {
     type => "jetty"
-    path => "{{ kgr_home }}/log/*.request.log"
+    path => "{{ application_home }}/log/*.request.log"
   }
-
-  file {
-    type => "sybase"
-    path => "/thomsonreuters/sybase/kplus/ASE-15_0/install/KPLUS.log"
-  }
-
-  file {
-    type => "sybase"
-    path => "/thomsonreuters/sybase/kplus/ASE-15_0/install/KPLUS.log"
-  }
-
-  file {
-    type => "sybase"
-    path => "/thomsonreuters/sybase/kgr/ASE-15_0/install/KGR.log"
-  }
-
-#/thomsonreuters/sybase/kplus/ASE-15_0/install/RUN_KPLUS
-# Error log path: /thomsonreuters/sybase/kplus/ASE-15_0/install/KPLUS.log
-#$SYBASE/ASE-15_0/install/ start scripts defines sybase log path
 
   file {
     type => "log4cxx-special1"
-    path => "{{ kgr_home }}/log/KGRAdapter_stdout.log"
+    path => "{{ application_home }}/log/KGRAdapter_stdout.log"
   }
 
 #KNS_PID:*.log
@@ -82,41 +63,41 @@ input {
 
   file {
     type => "log4cxx-special2"
-    path => "{{ kgr_home }}/log/KGRTaskServer_master_1_DBTraceFile.log  "
+    path => "{{ application_home }}/log/KGRTaskServer_master_1_DBTraceFile.log  "
   }
 
   file {
     type => "log4cxx"
-    path => "{{ kgr_home }}/log/KGRImportServer_stdout.log"
+    path => "{{ application_home }}/log/KGRImportServer_stdout.log"
   }
 
   file {
     type => "log4cxx"
-    path => "{{ kgr_home }}/log/KGRRateManagerServer_stdout.log"
+    path => "{{ application_home }}/log/KGRRateManagerServer_stdout.log"
   }
 
   file {
     type => "log4cxx"
-    path => "{{ kgr_home }}/log/KGRServer_master_stdout.log"
+    path => "{{ application_home }}/log/KGRServer_master_stdout.log"
   }
 
   file {
     type => "log4cxx"
-    path => "{{ kgr_home }}/log/KGRTaskServer_1_stdout.log"
+    path => "{{ application_home }}/log/KGRTaskServer_1_stdout.log"
   }
 
 #  file {
 #    type => "log4j"
-#    path => "{{ kgr_home }}/dist/log/*.log"
+#    path => "{{ application_home }}/dist/log/*.log"
 #  }
 
 #  file {
-#    path => "{{ kgr_home }}/dist/3rdparty/J2EE/tomcat_dist/logs/*.log"
+#    path => "{{ application_home }}/dist/3rdparty/J2EE/tomcat_dist/logs/*.log"
 #    exclude => ["*.gz"]
 #  }
 #
 #  file {
-#    path => "{{ kgr_home }}/data/J2EE/TomcatConfigs/logs/*.log"
+#    path => "{{ application_home }}/data/J2EE/TomcatConfigs/logs/*.log"
 #    exclude => ["*.gz"]
 #  }
 
@@ -156,15 +137,6 @@ filter {
       what => "previous"
     }
     mutate { replace => { type => "application" } }
-  }
-
-  if [type] == "sybase" {
-    multiline {
-      pattern => "^%{NUMBER:num1}:%{NUMBER:num2}:%{NUMBER:num3}:%{NUMBER:num4}:%{YEAR}/%{MONTHNUM}/%{MONTHDAY}%{SPACE}%{TIME}"
-      negate => true
-      what => "previous"
-    }
-#    mutate { replace => { type => "application" } }
   }
 
   if [type] == "tomcat" {

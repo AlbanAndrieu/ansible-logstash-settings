@@ -12,5 +12,21 @@ logstash_monitor_application_enabled: no
 logstash_monitor_sybase_enabled: no
 logstash_monitor_log4j_enabled: no
 
+#user: "{{ lookup('env','USER') }}"
+user: "root"
+shell_owner: "{{ user }}"
+shell_group: "{{ shell_owner }}"
+##home: '~' #please override me
+#home: "{{ lookup('env','HOME') }}"
+#shell_owner_home: "{{ home }}"
+shell_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
+
+logstash_change_log_dir: "/var/log/"
+logstash_change_log_dir_enabled: no
+
 jenkins_home: "/var/lib/jenkins"
-application_home: "/thomsonreuters/home/kgr"
+application_dir: "/thomsonreuters"
+application_home: "{{ application_dir }}/home/kgr"
+sybase_dir: "{{ application_dir }}/sybase"
+sybase_version: "ASE-15_0"
+

@@ -1,0 +1,30 @@
+#{{ ansible_managed }}
+input {
+
+  file {
+    type => "sybase"
+    path => "{{ sybase_dir }}/kplus/{{ sybase_version }}/install/KPLUS.log"
+  }
+
+  file {
+    type => "sybase"
+    path => "{{ sybase_dir }}/kgr/{{ sybase_version }}/install/KGR.log"
+  }
+
+#/thomsonreuters/sybase/kplus/ASE-15_0/install/RUN_KPLUS
+#$SYBASE/ASE-15_0/install/ start scripts defines sybase log path
+
+}
+
+filter {
+
+  if [type] == "sybase" {
+    multiline {
+      pattern => "^%{NUMBER:num1}:%{NUMBER:num2}:%{NUMBER:num3}:%{NUMBER:num4}:%{YEAR}/%{MONTHNUM}/%{MONTHDAY}%{SPACE}%{TIME}"
+      negate => true
+      what => "previous"
+    }
+#    mutate { replace => { type => "application" } }
+  }
+
+}

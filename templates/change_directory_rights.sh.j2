@@ -1,0 +1,1 @@
+find {{ logstash_change_log_dir }} -type f -name '*\.log' | xargs sudo chmod 755 $1 2>&1 > change_directory_rights.log
