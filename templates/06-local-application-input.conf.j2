@@ -112,7 +112,7 @@ filter {
       negate => true
       what => "previous"
     }
-    mutate { replace => { type => "application" } }
+    mutate { replace => { type => "{{ application_name }}" } }
   }
 
   if [type] == "log4cxx" {
@@ -121,7 +121,7 @@ filter {
       negate => true
       what => "previous"
     }
-    mutate { replace => { type => "application" } }
+    mutate { replace => { type => "{{ application_name }}" } }
   }
 
 }
@@ -139,5 +139,5 @@ filter {
 ##     logdate => "yyyy-MM-dd HH:mm:ss,SSS"
 ##  }
 #
-#  mutate { replace => { type => "application" } }
+#  mutate { replace => { type => "{{ application_name }}" } }
 #}
