@@ -101,6 +101,16 @@
   when: logstash_monitor_jetty_enabled
   notify: restart logstash
 
+- name: Create Logstash configuration file for jboss syslog.
+  template:
+    src: 04-local-jboss-input.conf.j2
+    dest: /etc/logstash/conf.d/04-local-jboss-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_jboss_enabled
+  notify: restart logstash
+
 - name: Create Logstash configuration file for elasticsearch syslog.
   template:
     src: 05-local-elasticsearch-input.conf.j2

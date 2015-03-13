@@ -4,7 +4,7 @@ input {
 #exec { command => "CURRENT_LOGFILE=$(ls -rt /srv/*-jetty-*/logs/*stderrout.log | tail -1); logtail2 -o /tmp/$(basename $CURRENT_LOGFILE).offset $CURRENT_LOGFILE" interval => "30" }
 
   file {
-    type => "jetty"
+    type => "jetty_access"
     path => "{{ application_home }}/log/*.request.log"
   }
 

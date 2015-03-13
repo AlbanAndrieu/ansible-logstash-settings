@@ -124,6 +124,9 @@ filter {
     mutate { replace => { type => "{{ application_name }}" } }
   }
 
+  #if "_grokparsefailure" in [tags] {
+  #    drop { }
+  #}
 }
 
 #filter {
