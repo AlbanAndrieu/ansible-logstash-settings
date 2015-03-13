@@ -31,6 +31,16 @@
   when: logstash_monitor_local_syslog
   notify: restart logstash
 
+- name: Create Logstash configuration file for collectd syslog.
+  template:
+    src: 02-local-collectd-input.conf.j2
+    dest: /etc/logstash/conf.d/02-local-collectd-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_collectd_syslog
+  notify: restart logstash
+
 - name: Create Logstash configuration file for jenkins-server syslog.
   template:
     src: 03-local-jenkins-server-input.conf.j2
