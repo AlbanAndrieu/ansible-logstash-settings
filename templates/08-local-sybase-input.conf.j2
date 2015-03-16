@@ -3,12 +3,7 @@ input {
 
   file {
     type => "sybase"
-    path => "{{ sybase_dir }}/kplus/{{ sybase_version }}/install/KPLUS.log"
-  }
-
-  file {
-    type => "sybase"
-    path => "{{ sybase_dir }}/kgr/{{ sybase_version }}/install/KGR.log"
+    path => "{{ sybase_dir }}/{{ sybase_user }}/{{ sybase_version }}/install/{{ sybase_log_file }}"
   }
 
 }
@@ -21,7 +16,7 @@ filter {
       negate => true
       what => "previous"
     }
-#    mutate { replace => { type => "application" } }
+#    mutate { replace => { type => "{{ application_name }}" } }
   }
 
 }

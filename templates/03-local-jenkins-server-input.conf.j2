@@ -85,11 +85,11 @@ filter {
     # ...other grok patterns go here...
 
     grok {
-       match => [ "__msg", "%{DATA:plugin}%{SPACE}\\n(?<level>\w+): %{GREEDYDATA:__message}" ]
+       match => [ "__msg", "%{DATA:jenkins-plugin}%{SPACE}\\n(?<level>\w+): %{GREEDYDATA:__message}" ]
        tag_on_failure => []
        overwrite => true
        #overwrite => [ "message" ]
-       add_tag => ['test']
+       #add_tag => ['test']
     }
 
     # if we have extracted a short message string, replace @message with it now

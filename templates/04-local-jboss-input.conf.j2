@@ -16,6 +16,7 @@ input {
 }
 
 filter {
+
   if [type] == "jboss" {
 
     multiline {
@@ -24,12 +25,13 @@ filter {
     }
 
     grok {
-      pattern => "%{DATESTAMP:timestamp} %{WORD:severity} %{GREEDYDATA:message}"
+#      pattern => "%{DATESTAMP:timestamp} %{WORD:severity} %{GREEDYDATA:message}"
+      match => { "message" => "%{DATESTAMP:timestamp} %{WORD:severity} %{GREEDYDATA:message}" }
     }
     
-    mutate {
-      replace => [ "@message", "%{message}" ]
-    }
+#    mutate {
+#      replace => [ "@message", "%{message}" ]
+#    }
   }  
 
 }

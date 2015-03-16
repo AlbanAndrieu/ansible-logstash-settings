@@ -26,7 +26,7 @@ filter {
 
   if [type] == "jenkins-selenium" {
     grok {
-      add_tag => [ "level_%{level}" ]
+      #add_tag => [ "level_%{level}" ]
       #match => [ "@message", "%{TIMESTAMP_ISO8601:logTimestampString}%{SPACE}:%{LOGLEVEL:level}%{SPACE}:%{GREEDYDATA:message}" ]
       match => [ "@message", "%{DATA:logTimestampString}%{SPACE}:%{LOGLEVEL:level}%{SPACE}:%{GREEDYDATA:message}" ]
     }
@@ -39,7 +39,7 @@ filter {
     #}    
   }else if [type] == "jenkins" {
     grok {
-      add_tag => [ "level_%{level}" ]
+      #add_tag => [ "level_%{level}" ]
       match => [ "@message", "%{LOGLEVEL:level}%{SPACE}:%{GREEDYDATA:message}" ]
     }
   }
