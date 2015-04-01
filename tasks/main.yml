@@ -197,5 +197,8 @@
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and logstash_change_log_dir_enabled
   tags: log
 
+#TODO
+#ADD Logstash-Search-Nabla in kibana template folder
+
 - name: Ensure Logstash is started and enabled on boot.
   service: name=logstash state=started enabled=yes
