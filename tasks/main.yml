@@ -200,5 +200,14 @@
 #TODO
 #ADD Logstash-Search-Nabla in kibana template folder
 
+#TODO
+#sudo apt-get install python-pip
+#sudo pip install elasticsearch-curator
+#curator --help
+#http://www.elastic.co/guide/en/elasticsearch/client/curator/current/examples.html
+#curator --host 127.0.0.1 show indices --timestring '%Y.%m.%d'
+#curator --host 127.0.0.1 delete indices --older-than 30 --time-unit days --timestring '%Y.%m.%d'
+##curator --host 10.0.0.2 close indices --exclude do-not-touch --exclude logstash-2015
+
 - name: Ensure Logstash is started and enabled on boot.
   service: name=logstash state=started enabled=yes
