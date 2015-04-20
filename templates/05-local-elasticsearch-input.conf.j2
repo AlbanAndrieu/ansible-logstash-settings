@@ -3,7 +3,7 @@
 #TODO activate slowlog
 #http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/logging.html#slowlog
 input {
-  file { 
+  file {
     path => "/var/log/elasticsearch/*.log"  # tail ES log and slowlogs
     type => "elasticsearch"
     start_position => "beginning"  # parse existing logs, too
@@ -18,7 +18,7 @@ input {
 filter {
   if [type] == "elasticsearch" {
     grok {  # parses the common bits
-      match => [ "message", "\[%{TIMESTAMP_ISO8601:timestamp}\]\[%{DATA:severity}%{SPACE}\]\[%{DATA:log_source}%{SPACE}\]%{SPACE}\[%{DATA:node}\]%{SPACE}(?<message>(.|\r|\n)*)" ]
+      match => [ "message", "\[%{TIMESTAMP_ISO8601:timestamp}\]\[%{LOGLEVEL:level}%{SPACE}\]\[%{DATA:log_source}%{SPACE}\]%{SPACE}\[%{DATA:node}\]%{SPACE}(?<message>(.|\r|\n)*)" ]
       overwrite => [ "message" ]
     }
 

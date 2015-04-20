@@ -1,6 +1,14 @@
 #{{ ansible_managed }}
 input {
 
-  collectd {}
-  
+  collectd {
+	type => "collectd"
+  }
+
+  #udp {
+  #  port = 25826         # 25826 matches port specified in collectd.conf
+  #  buffer_size = 1452   # 1452 is the default buffer size for Collectd
+  #  codec = collectd { } # specific Collectd codec to invoke
+  #  type = collectd
+  #}
 }
