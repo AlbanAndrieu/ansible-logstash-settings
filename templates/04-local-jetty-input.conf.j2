@@ -12,7 +12,7 @@ input {
 
 filter {
 
-  if [type] == "jetty" {
+  if [type] == "jetty_access" {
 
     grok {
       match => { "message" => "%{IPORHOST:clientip} - %{DATA:data1} - %{DATA:data2} \[%{HTTPDATE:timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response}" }
