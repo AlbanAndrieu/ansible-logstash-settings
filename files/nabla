@@ -1,5 +1,5 @@
 {
-  "title": "Logstash Search FR",
+  "title": "nabla",
   "services": {
     "query": {
       "list": {
@@ -22,16 +22,35 @@
         "0": {
           "type": "time",
           "field": "@timestamp",
-          "from": "now-1h",
+          "from": "now-12h",
           "to": "now",
           "mandate": "must",
           "active": true,
           "alias": "",
           "id": 0
+        },
+        "1": {
+          "editing": true,
+          "type": "querystring",
+          "query": "type : \"collectd\"",
+          "mandate": "mustNot",
+          "active": true,
+          "alias": "",
+          "id": 1
+        },
+        "2": {
+          "type": "exists",
+          "field": "severity",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 2
         }
       },
       "ids": [
-        0
+        0,
+        1,
+        2
       ]
     }
   },
@@ -44,77 +63,72 @@
       "collapsable": true,
       "panels": [
         {
+          "error": false,
           "span": 4,
           "editable": true,
-          "type": "histogram",
+          "type": "terms",
           "loadingEditor": false,
-          "mode": "count",
-          "time_field": "@timestamp",
-          "value_field": "",
-          "x-axis": true,
-          "y-axis": true,
-          "scale": 1,
-          "y_format": "none",
-          "grid": {
-            "max": null,
-            "min": 0
+          "field": "type",
+          "exclude": [],
+          "missing": true,
+          "other": true,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
           },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "spyable": true,
           "queries": {
             "mode": "all",
             "ids": [
               0
             ]
           },
-          "annotate": {
-            "enable": false,
-            "query": "*",
-            "size": 20,
-            "field": "_type",
-            "sort": [
-              "_score",
-              "desc"
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Type"
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "level",
+          "exclude": [
+            ""
+          ],
+          "missing": false,
+          "other": true,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "pie",
+          "counter_pos": "below",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
             ]
           },
-          "auto_int": false,
-          "resolution": 100,
-          "interval": "5m",
-          "intervals": [
-            "auto",
-            "1s",
-            "1m",
-            "5m",
-            "10m",
-            "30m",
-            "1h",
-            "3h",
-            "12h",
-            "1d",
-            "1w",
-            "1y"
-          ],
-          "lines": false,
-          "fill": 0,
-          "linewidth": 3,
-          "points": false,
-          "pointradius": 5,
-          "bars": true,
-          "stack": true,
-          "spyable": true,
-          "zoomlinks": true,
-          "options": true,
-          "legend": true,
-          "show_query": true,
-          "interactive": true,
-          "legend_counts": true,
-          "timezone": "browser",
-          "percentage": false,
-          "zerofill": true,
-          "derivative": false,
-          "tooltip": {
-            "value_type": "cumulative",
-            "query_as_alias": true
-          },
-          "title": "Histo"
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "Level"
         },
         {
           "error": false,
@@ -150,39 +164,6 @@
           "title": "IP"
         },
         {
-          "error": false,
-          "span": 4,
-          "editable": true,
-          "type": "terms",
-          "loadingEditor": false,
-          "field": "type",
-          "exclude": [],
-          "missing": true,
-          "other": true,
-          "size": 10,
-          "order": "count",
-          "style": {
-            "font-size": "10pt"
-          },
-          "donut": false,
-          "tilt": false,
-          "labels": true,
-          "arrangement": "horizontal",
-          "chart": "table",
-          "counter_pos": "above",
-          "spyable": true,
-          "queries": {
-            "mode": "all",
-            "ids": [
-              0
-            ]
-          },
-          "tmode": "terms",
-          "tstat": "total",
-          "valuefield": "",
-          "title": "Type"
-        },
-        {
           "span": 12,
           "editable": true,
           "group": [
@@ -194,7 +175,7 @@
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
-          "interval": "30s",
+          "interval": "5m",
           "fill": 3,
           "linewidth": 3,
           "timezone": "browser",
@@ -257,6 +238,79 @@
           "legend_counts": true,
           "zerofill": true,
           "derivative": false
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "count",
+          "time_field": "@timestamp",
+          "value_field": "",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "none",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "5m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": true,
+          "fill": 0,
+          "linewidth": 3,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": true,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "individual",
+            "query_as_alias": true
+          },
+          "title": "Histo"
         },
         {
           "error": false,
@@ -372,7 +426,7 @@
           "status": "Stable",
           "trimFactor": 300,
           "normTimes": true,
-          "all_fields": true
+          "all_fields": false
         }
       ],
       "notice": false
@@ -397,11 +451,15 @@
       "pinned": true,
       "history": [
         "",
+        "not type : \"collectd\"",
+        "type : not \"collectd\"",
+        "type : !\"collectd\"",
+        "type : \"collectd\"",
+        "type : \"colectd\"",
         "INFO",
         "*INFO",
         "*ERROR",
-        "*application",
-        "*test"
+        "*application"
       ],
       "remember": 10,
       "enable": true
