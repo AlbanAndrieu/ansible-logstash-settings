@@ -30,27 +30,17 @@
           "id": 0
         },
         "1": {
-          "editing": true,
           "type": "querystring",
           "query": "type : \"collectd\"",
           "mandate": "mustNot",
-          "active": true,
+          "active": false,
           "alias": "",
           "id": 1
-        },
-        "2": {
-          "type": "exists",
-          "field": "severity",
-          "mandate": "must",
-          "active": true,
-          "alias": "",
-          "id": 2
         }
       },
       "ids": [
         0,
-        1,
-        2
+        1
       ]
     }
   },
@@ -68,10 +58,43 @@
           "editable": true,
           "type": "terms",
           "loadingEditor": false,
+          "field": "host",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "total",
+          "valuefield": "",
+          "title": "IP"
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
           "field": "type",
           "exclude": [],
-          "missing": true,
-          "other": true,
+          "missing": false,
+          "other": false,
           "size": 10,
           "order": "count",
           "style": {
@@ -102,11 +125,9 @@
           "type": "terms",
           "loadingEditor": false,
           "field": "level",
-          "exclude": [
-            ""
-          ],
+          "exclude": [],
           "missing": false,
-          "other": true,
+          "other": false,
           "size": 10,
           "order": "count",
           "style": {
@@ -128,40 +149,7 @@
           "tmode": "terms",
           "tstat": "total",
           "valuefield": "",
-          "title": "Level"
-        },
-        {
-          "error": false,
-          "span": 4,
-          "editable": true,
-          "type": "terms",
-          "loadingEditor": false,
-          "field": "host",
-          "exclude": [],
-          "missing": true,
-          "other": true,
-          "size": 10,
-          "order": "count",
-          "style": {
-            "font-size": "10pt"
-          },
-          "donut": false,
-          "tilt": false,
-          "labels": true,
-          "arrangement": "horizontal",
-          "chart": "table",
-          "counter_pos": "above",
-          "spyable": true,
-          "queries": {
-            "mode": "all",
-            "ids": [
-              0
-            ]
-          },
-          "tmode": "terms",
-          "tstat": "total",
-          "valuefield": "",
-          "title": "IP"
+          "title": "LEVEL"
         },
         {
           "span": 12,
@@ -246,7 +234,7 @@
           "loadingEditor": false,
           "mode": "count",
           "time_field": "@timestamp",
-          "value_field": "",
+          "value_field": "type",
           "x-axis": true,
           "y-axis": true,
           "scale": 1,
@@ -271,9 +259,9 @@
               "desc"
             ]
           },
-          "auto_int": true,
+          "auto_int": false,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "1m",
           "intervals": [
             "auto",
             "1s",
@@ -307,10 +295,11 @@
           "zerofill": true,
           "derivative": false,
           "tooltip": {
-            "value_type": "individual",
+            "value_type": "cumulative",
             "query_as_alias": true
           },
-          "title": "Histo"
+          "title": "Histo",
+          "scaleSeconds": false
         },
         {
           "error": false,
@@ -320,8 +309,8 @@
           "loadingEditor": false,
           "field": "request",
           "exclude": [],
-          "missing": true,
-          "other": true,
+          "missing": false,
+          "other": false,
           "size": 10,
           "order": "count",
           "style": {
@@ -353,8 +342,8 @@
           "loadingEditor": false,
           "field": "response",
           "exclude": [],
-          "missing": true,
-          "other": true,
+          "missing": false,
+          "other": false,
           "size": 10,
           "order": "count",
           "style": {
@@ -426,7 +415,7 @@
           "status": "Stable",
           "trimFactor": 300,
           "normTimes": true,
-          "all_fields": false
+          "all_fields": true
         }
       ],
       "notice": false
@@ -451,15 +440,15 @@
       "pinned": true,
       "history": [
         "",
-        "not type : \"collectd\"",
-        "type : not \"collectd\"",
-        "type : !\"collectd\"",
-        "type : \"collectd\"",
-        "type : \"colectd\"",
-        "INFO",
-        "*INFO",
-        "*ERROR",
-        "*application"
+        "plugin: \"java\"",
+        "plugin: \"jvm\"",
+        "plugin: \"disk\"",
+        "plugin: \"swap\"",
+        "plugin: \"processes\" AND type_instance: \"zombies\"",
+        "plugin: \"processes\" AND type_instance: \"blocked\"",
+        "plugin: \"processes\" AND type_instance: \"running\"",
+        "plugin: \"irq\"",
+        "plugin: \"cpu\""
       ],
       "remember": 10,
       "enable": true
