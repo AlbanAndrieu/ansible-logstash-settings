@@ -267,11 +267,56 @@
         "29": {
           "id": 29,
           "color": "#0A50A1",
-          "alias": "disk",
+          "alias": "disk-sda",
           "pin": false,
           "type": "lucene",
           "enable": true,
-          "query": "plugin:\"disk\""
+          "query": "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sda\""
+        },
+        "30": {
+          "id": 30,
+          "color": "#962D82",
+          "alias": "load",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "plugin:\"load\""
+        },
+        "31": {
+          "id": 31,
+          "color": "#614D93",
+          "alias": "tcpconns-listen",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "plugin: \"tcpconns\" AND type_instance: \"ESTABLISHED\""
+        },
+        "32": {
+          "id": 32,
+          "color": "#9AC48A",
+          "alias": "disk-sdb",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sdb\""
+        },
+        "33": {
+          "id": 33,
+          "color": "#F2C96D",
+          "alias": "disk-sdc",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sdc\""
+        },
+        "34": {
+          "id": 34,
+          "color": "#65C5DB",
+          "alias": "exec",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "plugin: \"exec\" AND type_instance: \"ESTABLISHED\""
         }
       },
       "ids": [
@@ -304,7 +349,12 @@
         26,
         27,
         28,
-        29
+        29,
+        30,
+        31,
+        32,
+        33,
+        34
       ]
     },
     "filter": {
@@ -312,7 +362,7 @@
         "0": {
           "type": "time",
           "field": "@timestamp",
-          "from": "now-6h",
+          "from": "now-1h",
           "to": "now",
           "mandate": "must",
           "active": true,
@@ -326,11 +376,21 @@
           "active": true,
           "alias": "",
           "id": 1
+        },
+        "2": {
+          "type": "terms",
+          "field": "host.raw",
+          "value": "albandri.wrong",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 2
         }
       },
       "ids": [
         0,
-        1
+        1,
+        2
       ]
     }
   },
@@ -396,7 +456,12 @@
               26,
               27,
               28,
-              29
+              29,
+              30,
+              31,
+              32,
+              33,
+              34
             ]
           },
           "tmode": "terms",
@@ -438,7 +503,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -495,6 +560,79 @@
           "loadingEditor": false,
           "mode": "mean",
           "time_field": "@timestamp",
+          "value_field": "midterm",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "short",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              30
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "30s",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": true,
+          "fill": 0,
+          "linewidth": 3,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": true,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "individual",
+            "query_as_alias": true
+          },
+          "title": "LOAD"
+        },
+        {
+          "span": 12,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
           "value_field": "value",
           "x-axis": true,
           "y-axis": true,
@@ -524,7 +662,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -602,7 +740,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -914,8 +1052,8 @@
           "loadingEditor": false,
           "field": "type_instance",
           "exclude": [],
-          "missing": true,
-          "other": true,
+          "missing": false,
+          "other": false,
           "size": 10,
           "order": "max",
           "style": {
@@ -954,7 +1092,7 @@
           "editable": true,
           "type": "histogram",
           "loadingEditor": false,
-          "mode": "mean",
+          "mode": "total",
           "time_field": "@timestamp",
           "value_field": "read",
           "x-axis": true,
@@ -983,7 +1121,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1014,20 +1152,21 @@
           "legend_counts": true,
           "timezone": "browser",
           "percentage": false,
-          "zerofill": true,
+          "zerofill": false,
           "derivative": false,
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": true
           },
-          "title": "Disk Read"
+          "title": "Disk SDA Read",
+          "scaleSeconds": true
         },
         {
           "span": 6,
           "editable": true,
           "type": "histogram",
           "loadingEditor": false,
-          "mode": "mean",
+          "mode": "total",
           "time_field": "@timestamp",
           "value_field": "write",
           "x-axis": true,
@@ -1056,7 +1195,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1087,13 +1226,310 @@
           "legend_counts": true,
           "timezone": "browser",
           "percentage": false,
-          "zerofill": true,
+          "zerofill": false,
           "derivative": false,
           "tooltip": {
             "value_type": "cumulative",
             "query_as_alias": true
           },
-          "title": "Disk write"
+          "title": "Disk SDA write",
+          "scaleSeconds": true
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "total",
+          "time_field": "@timestamp",
+          "value_field": "read",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "bytes",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              32
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "30s",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": false,
+          "fill": 0,
+          "linewidth": 3,
+          "points": false,
+          "pointradius": 5,
+          "bars": true,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "Disk SDB Read",
+          "scaleSeconds": true
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "total",
+          "time_field": "@timestamp",
+          "value_field": "write",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "bytes",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              32
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "30s",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": false,
+          "fill": 0,
+          "linewidth": 3,
+          "points": false,
+          "pointradius": 5,
+          "bars": true,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "Disk SDB Write",
+          "scaleSeconds": true
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "total",
+          "time_field": "@timestamp",
+          "value_field": "read",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "bytes",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              33
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "30s",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": false,
+          "fill": 0,
+          "linewidth": 3,
+          "points": false,
+          "pointradius": 5,
+          "bars": true,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "Disk SDC Read",
+          "scaleSeconds": true
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "max",
+          "time_field": "@timestamp",
+          "value_field": "write",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "bytes",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              33
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "30s",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": false,
+          "fill": 0,
+          "linewidth": 3,
+          "points": false,
+          "pointradius": 5,
+          "bars": true,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "Disk SDB Write",
+          "scaleSeconds": true
         },
         {
           "error": false,
@@ -1139,6 +1575,72 @@
       "collapsable": true,
       "panels": [
         {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "value",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "term",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              34
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "count",
+          "valuefield": "value",
+          "title": "PORT"
+        },
+        {
+          "error": false,
+          "span": 6,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "plugin_instance",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "max",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              31
+            ]
+          },
+          "tmode": "terms_stats",
+          "tstat": "max",
+          "valuefield": "value",
+          "title": "TCP"
+        },
+        {
           "span": 6,
           "editable": true,
           "type": "histogram",
@@ -1172,7 +1674,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1246,7 +1748,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1320,7 +1822,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1394,7 +1896,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1468,7 +1970,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1542,7 +2044,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1628,7 +2130,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1705,7 +2207,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1803,7 +2305,12 @@
               26,
               27,
               28,
-              29
+              29,
+              30,
+              31,
+              32,
+              33,
+              34
             ]
           },
           "annotate": {
@@ -1818,7 +2325,7 @@
           },
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "intervals": [
             "auto",
             "1s",
@@ -1924,7 +2431,12 @@
               26,
               27,
               28,
-              29
+              29,
+              30,
+              31,
+              32,
+              33,
+              34
             ]
           },
           "style": {
@@ -1956,16 +2468,16 @@
       "query": "*",
       "pinned": true,
       "history": [
-        "plugin:\"disk\"",
+        "plugin: \"exec\" AND type_instance: \"ESTABLISHED\"",
+        "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sdc\"",
+        "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sdb\"",
+        "plugin: \"tcpconns\" AND type_instance: \"ESTABLISHED\"",
+        "plugin:\"load\"",
+        "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sda\"",
         "plugin: \"uptime\"",
         "plugin: \"processes\" AND type_instance: \"running\"",
         "plugin: \"processes\" AND type_instance: \"stopped\"",
-        "plugin: \"processes\" AND type_instance: \"paging\"",
-        "plugin: \"processes\" AND type_instance: \"zombies\"",
-        "plugin: \"processes\" AND type_instance: \"blocked\"",
-        "plugin: \"processes\" AND type_instance: \"sleeping\"",
-        "plugin: \"irq\"",
-        "plugin: \"cpu\" AND plugin_instance: \"7\""
+        "plugin: \"processes\" AND type_instance: \"paging\""
       ],
       "remember": 10
     },
