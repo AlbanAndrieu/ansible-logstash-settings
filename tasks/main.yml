@@ -197,6 +197,26 @@
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and logstash_change_log_dir_enabled
   tags: log
 
+- name: Create custom configuration file for local collectd.
+  template:
+    src: custom.sh.j2
+    dest: '{{ collectd_prefix_custom_dir }}/custom.sh'
+    owner: '{{ jenkins_owner }}'
+    group: '{{ jenkins_group }}'
+    mode: 0644
+  when: logstash_monitor_local_collectd
+#  notify: restart collectd
+
+- name: Create configuration file for local collectd.
+  template:
+    src: collectd.conf.j2
+    dest: '{{ collectd_prefix_conf }}/collectd.conf'
+    owner: '{{ shell_owner }}'
+    group: '{{ shell_group }}'
+    mode: 0644
+  when: logstash_monitor_local_collectd
+#  notify: restart collectd
+
 #TODO
 #ADD Logstash-Search-Nabla in kibana template folder
 

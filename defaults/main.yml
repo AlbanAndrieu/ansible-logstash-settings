@@ -1,5 +1,6 @@
 ---
 logstash_monitor_local_syslog: yes
+logstash_monitor_local_collectd: no
 logstash_monitor_collectd_syslog: no
 logstash_monitor_jenkins_enabled: no
 logstash_monitor_nexus_enabled: no
@@ -34,6 +35,8 @@ tomcat_catalina_out: "{{ tomcat_catalina_log_dir }}/catalina.out"
 
 jenkins_home: "/var/lib/jenkins"
 jenkins_user: "jenkins"
+jenkins_owner: "{{ jenkins_user }}"
+jenkins_group: "{{ jenkins_owner }}"
 application_dir: ""
 application_user: "{{ user }}"
 application_home: "{{ application_dir }}/home/{{ application_user }}"
@@ -57,3 +60,6 @@ collectd_custom_log_dir: "/tmp"
 collectd_jmx_host: "localhost"
 collectd_jmx_port: "1099"
 collectd_connection_host: "{{ collectd_jmx_host }}"
+collectd_prefix: /opt/collectd      # The place where Collectd will be installed
+collectd_prefix_type: "{{collectd_prefix}}/etc"
+collectd_prefix_conf: "{{collectd_prefix}}/etc"
