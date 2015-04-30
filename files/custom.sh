@@ -69,38 +69,38 @@ do
   #sudo lsof -ujenkins | grep ESTABLISHED
   for VARIABLE in $info
   do
-    #echo "VARIABLE : $VARIABLE"
+    #echo "VARIABLE : ${VARIABLE}"
 
-    pid=$(echo "$VARIABLE"|awk -F ' ' '{print $2}')
-    #echo "TEST pid : $pid"
-    ppid=$(echo "$VARIABLE"|awk -F ' ' '{print $3}')
-    #echo "TEST ppid : $ppid"
-    command=$(echo "$VARIABLE"|awk -F ' ' '{print $1}')
-    #echo "TEST command : $command"
-    connected_ports=$(echo "$VARIABLE"|awk -F ' ' '{print $10}')
-    #echo "TEST connected_ports : $connected_ports"
+    pid=$(echo "${VARIABLE}"|awk -F ' ' '{print $2}')
+    #echo "TEST pid : ${pid}"
+    ppid=$(echo "${VARIABLE}"|awk -F ' ' '{print $3}')
+    #echo "TEST ppid : ${ppid}"
+    command=$(echo "${VARIABLE}"|awk -F ' ' '{print $1}')
+    #echo "TEST command : ${command}"
+    connected_ports=$(echo "${VARIABLE}"|awk -F ' ' '{print $10}')
+    #echo "TEST connected_ports : ${connected_ports}"
 
     #source
-    connected_ports_src=$(echo "$connected_ports"|awk -F '->' '{print $1}'|awk -F ':' '{print $2}')
-    #echo "TEST connected_ports_src : $connected_ports_src"
-    connected_hosts_src=$(echo "$connected_ports"|awk -F '->' '{print $2}'|awk -F ':' '{print $1}')
-    #echo "TEST connected_hosts_src : $connected_hosts_src"
+    connected_ports_src=$(echo "${connected_ports}"|awk -F '->' '{print $1}'|awk -F ':' '{print $2}')
+    #echo "TEST connected_ports_src : ${connected_ports_src}"
+    connected_hosts_src=$(echo "${connected_ports}"|awk -F '->' '{print $2}'|awk -F ':' '{print $1}')
+    #echo "TEST connected_hosts_src : ${connected_hosts_src}"
     #dest
-    connected_ports_dst=$(echo "$connected_ports"|awk -F '->' '{print $2}'|awk -F ':' '{print $2}')
-    #echo "TEST connected_ports_dst : $connected_ports_dst"
-    connected_hosts_dst=$(echo "$connected_ports"|awk -F '->' '{print $2}'|awk -F ':' '{print $1}')
-    #echo "TEST connected_hosts_dst : $connected_hosts_dst"
+    connected_ports_dst=$(echo "${connected_ports}"|awk -F '->' '{print $2}'|awk -F ':' '{print $2}')
+    #echo "TEST connected_ports_dst : ${connected_ports_dst}"
+    connected_hosts_dst=$(echo "${connected_ports}"|awk -F '->' '{print $2}'|awk -F ':' '{print $1}')
+    #echo "TEST connected_hosts_dst : ${connected_hosts_dst}"
 
-    if [ "$connected_hosts_dst" = "127.0.0.1" ]; then
+    if [ "${connected_hosts_dst}" = "127.0.0.1" ]; then
       #check integer
-      if [[ ! $connected_ports_src =~ ^-?[0-9]+$ ]]; then
+      if [[ ! ${connected_ports_src} =~ ^-?[0-9]+$ ]]; then
        #&& continue
-       echo "Wrong port : $connected_ports_src" >> ${FILENAME_ERROR}
+       echo "Wrong port : ${connected_ports_src}" >> ${FILENAME_ERROR}
        continue
       fi
-      if [[ ! $connected_ports_dst =~ ^-?[0-9]+$ ]]; then
+      if [[ ! ${connected_ports_dst} =~ ^-?[0-9]+$ ]]; then
        #&& continue
-       echo "Wrong port : $connected_ports_dst" >> ${FILENAME_ERROR}
+       echo "Wrong port : ${connected_ports_dst}" >> ${FILENAME_ERROR}
        continue
       fi
 
@@ -108,18 +108,31 @@ do
       #TYPE="lsof"
       #gksudo geany /opt/collectd/share/collectd/types.db
       #lsof		port:GAUGE:1024:9999, command:COUNTER:0:U, pid:COUNTER:0:U
-      mutation=$(ps -edf | grep ${pid} | grep -v grep | grep MutationTestSlave)
-      #echo "TEST mutation : $mutation"
-      if [ -z "$mutation" ]; then
-       echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-${TCP_TYPE}_$command $time:${connected_ports_src:-0}"
-       #echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-${TCP_TYPE}_$command N:$connected_ports_src"
-       #echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-${TCP_TYPE}_pid N:$pid"
-       #echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-ESTABLISHED interval=$INTERVAL $connected_ports_src:$command:$pid"
-       echo "PROCESS TIME:${time} PID:${pid}" >> ${FILENAME}
-       pstree $pid >> ${FILENAME}
-       ps -jfH --pid $pid >> ${FILENAME}
+      mutation=$(ps -f --pid ${pid} | grep -v grep | grep MutationTestSlave)
+      #echo "TEST mutation : ${mutation} ${ppid}"
+      selenium=$(ps -f --pid ${pid} | grep -v grep | grep 'selenium-server-standalone')
+      surefire=$(ps -f --pid ${pid} | grep -v grep | grep 'surefire')
+      if [ -z "${mutation}" -a -z "${selenium}" -a "${ppid}" != "1" ]; then
+
+        echo "START ----------------" >> ${FILENAME}
+        echo "PROCESS TIME:${time} PID:${pid} PORT_SRC:${connected_ports_src:-0} PORT_DST:${connected_ports_dst:-0}" >> ${FILENAME}
+
+        if [ -n "${surefire}" ]; then
+          echo "surefire" >> ${FILENAME}
+          echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-${TCP_TYPE}_surefire ${time}:${connected_ports_dst:-0}"
+          #echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-${TCP_TYPE}_${command} N:${connected_ports_src}"
+          #echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-${TCP_TYPE}_pid N:${pid}"
+          #echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-ESTABLISHED interval=${INTERVAL} ${connected_ports_src}:${command}:${pid}"
+        else
+          echo "PUTVAL ${HOSTNAME}/${PLUGIN}-${PLUGIN_INSTANCE}/${TYPE}-${TCP_TYPE}_${command} ${time}:${connected_ports_dst:-0}"
+        fi
+
+        echo "${VARIABLE}" >> ${FILENAME}
+        pstree $pid >> ${FILENAME}
+        ps -jfH --pid $pid >> ${FILENAME}
+        echo "END ----------------" >> ${FILENAME}
       else
-	    echo "WRONG mutation for ${pid}" >> ${FILENAME_ERROR}
+	    echo "Unrelevant data for ${pid}-${ppid}" >> ${FILENAME_ERROR}
         echo "${VARIABLE}" >> ${FILENAME_ERROR}
       fi
     else

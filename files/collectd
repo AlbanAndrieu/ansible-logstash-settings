@@ -312,11 +312,20 @@
         "34": {
           "id": 34,
           "color": "#65C5DB",
-          "alias": "exec",
+          "alias": "exec-java",
           "pin": false,
           "type": "lucene",
           "enable": true,
-          "query": "plugin: \"exec\" AND type_instance: \"ESTABLISHED\""
+          "query": "plugin: \"exec\" AND type_instance: \"ESTABLISHED_java\""
+        },
+        "35": {
+          "id": 35,
+          "color": "#F9934E",
+          "alias": "exec-surefire",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "plugin: \"exec\" AND type_instance: \"ESTABLISHED_surefire\""
         }
       },
       "ids": [
@@ -354,7 +363,8 @@
         31,
         32,
         33,
-        34
+        34,
+        35
       ]
     },
     "filter": {
@@ -376,21 +386,11 @@
           "active": true,
           "alias": "",
           "id": 1
-        },
-        "2": {
-          "type": "terms",
-          "field": "host.raw",
-          "value": "albandri.wrong",
-          "mandate": "must",
-          "active": true,
-          "alias": "",
-          "id": 2
         }
       },
       "ids": [
         0,
-        1,
-        2
+        1
       ]
     }
   },
@@ -461,7 +461,8 @@
               31,
               32,
               33,
-              34
+              34,
+              35
             ]
           },
           "tmode": "terms",
@@ -1585,7 +1586,7 @@
           "missing": false,
           "other": false,
           "size": 10,
-          "order": "term",
+          "order": "count",
           "style": {
             "font-size": "10pt"
           },
@@ -1603,13 +1604,46 @@
             ]
           },
           "tmode": "terms",
-          "tstat": "count",
-          "valuefield": "value",
-          "title": "PORT"
+          "tstat": "total",
+          "valuefield": "",
+          "title": "PORT java"
         },
         {
           "error": false,
           "span": 6,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "value",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 50,
+          "order": "count",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "table",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              35
+            ]
+          },
+          "tmode": "terms",
+          "tstat": "count",
+          "valuefield": "value",
+          "title": "PORT surefire"
+        },
+        {
+          "error": false,
+          "span": 12,
           "editable": true,
           "type": "terms",
           "loadingEditor": false,
@@ -2310,7 +2344,8 @@
               31,
               32,
               33,
-              34
+              34,
+              35
             ]
           },
           "annotate": {
@@ -2436,7 +2471,8 @@
               31,
               32,
               33,
-              34
+              34,
+              35
             ]
           },
           "style": {
@@ -2468,7 +2504,8 @@
       "query": "*",
       "pinned": true,
       "history": [
-        "plugin: \"exec\" AND type_instance: \"ESTABLISHED\"",
+        "plugin: \"exec\" AND type_instance: \"ESTABLISHED_surefire\"",
+        "plugin: \"exec\" AND type_instance: \"ESTABLISHED_java\"",
         "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sdc\"",
         "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sdb\"",
         "plugin: \"tcpconns\" AND type_instance: \"ESTABLISHED\"",
@@ -2476,8 +2513,7 @@
         "plugin:\"disk\" AND collectd_type: \"disk_octets\" AND plugin_instance:\"sda\"",
         "plugin: \"uptime\"",
         "plugin: \"processes\" AND type_instance: \"running\"",
-        "plugin: \"processes\" AND type_instance: \"stopped\"",
-        "plugin: \"processes\" AND type_instance: \"paging\""
+        "plugin: \"processes\" AND type_instance: \"stopped\""
       ],
       "remember": 10
     },
