@@ -4,7 +4,7 @@
     "query": {
       "list": {
         "0": {
-          "query": "",
+          "query": "plugin: \"GenericJMX\"",
           "alias": "",
           "color": "#7EB26D",
           "id": 0,
@@ -22,7 +22,7 @@
         "0": {
           "type": "time",
           "field": "@timestamp",
-          "from": "now-12h",
+          "from": "now-1h",
           "to": "now",
           "mandate": "must",
           "active": true,
@@ -36,11 +36,21 @@
           "active": false,
           "alias": "",
           "id": 1
+        },
+        "2": {
+          "type": "field",
+          "field": "message",
+          "query": "\"Dropped by firewall\"",
+          "mandate": "mustNot",
+          "active": true,
+          "alias": "",
+          "id": 2
         }
       },
       "ids": [
         0,
-        1
+        1,
+        2
       ]
     }
   },
@@ -163,7 +173,7 @@
           "value_field": null,
           "auto_int": true,
           "resolution": 100,
-          "interval": "5m",
+          "interval": "30s",
           "fill": 3,
           "linewidth": 3,
           "timezone": "browser",
@@ -298,8 +308,7 @@
             "value_type": "cumulative",
             "query_as_alias": true
           },
-          "title": "Histo",
-          "scaleSeconds": false
+          "title": "Histo"
         },
         {
           "error": false,
@@ -439,16 +448,16 @@
       "query": "*",
       "pinned": true,
       "history": [
-        "",
+        "plugin: \"GenericJMX\"",
         "plugin: \"java\"",
-        "plugin: \"jvm\"",
-        "plugin: \"disk\"",
-        "plugin: \"swap\"",
-        "plugin: \"processes\" AND type_instance: \"zombies\"",
-        "plugin: \"processes\" AND type_instance: \"blocked\"",
-        "plugin: \"processes\" AND type_instance: \"running\"",
-        "plugin: \"irq\"",
-        "plugin: \"cpu\""
+        "plugin: \"interface\"",
+        "",
+        "plugin: \"interface\" AND plugin_instance: \"eth1\"",
+        "\"Dropped by firewall\"",
+        "Dropped by firewall",
+        "not type : \"collectd\"",
+        "type : not \"collectd\"",
+        "type : !\"collectd\""
       ],
       "remember": 10,
       "enable": true

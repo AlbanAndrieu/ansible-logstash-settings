@@ -12,11 +12,18 @@
 # Global settings for the daemon.                                            #
 ##############################################################################
 
-Hostname "albandri.wrong"
-#FQDNLookup true
+
+# General options
+Interval     {{ collectd_interval }}
+ReadThreads  {{ collectd_readthreads }}
+TypesDB "{{collectd_prefix}}/share/collectd/types.db"
+TypesDB "{{collectd_prefix_type}}/types.db"
+{% if collectd_hostname %}Hostname {{ collectd_hostname }}
+{% endif %}
+FQDNLookup {{ 'true' if collectd_fdqnlookup else 'false' }}
+
 #BaseDir "/var/lib/collectd"
-#PluginDir "/usr/lib/collectd"
-#TypesDB "/usr/share/collectd/types.db" "/etc/collectd/my_types.db"
+#PluginDir "{{ collectd_prefix_custom_dir }}"
 
 #----------------------------------------------------------------------------#
 # When enabled, plugins are loaded automatically with the default options    #
@@ -426,7 +433,7 @@ LoadPlugin users
 <Plugin exec>
 #	Exec user "/path/to/exec"
 #	Exec "user:group" "/path/to/exec"
-	Exec jenkins "/usr/lib/collectd/custom.sh"
+	Exec jenkins "{{ collectd_prefix_custom_dir }}/custom.sh"
 #	NotificationExec user "/path/to/exec"
 </Plugin>
 
@@ -703,10 +710,10 @@ LoadPlugin users
       # Connection blocks #
       #####################
       <Connection>
-        ServiceURL "service:jmx:rmi:///jndi/rmi://localhost:17264/jmxrmi"
+        ServiceURL "service:jmx:rmi:///jndi/rmi://{{ collectd_jmx_host }}:{{ collectd_jmx_port }}/jmxrmi"
         User "monitorRole"
         Password "queeZie1"
-        Host "localhost"
+        Host "{{ collectd_connection_host }}"
         Collect "classes"
         Collect "compilation"
         Collect "garbage_collector"

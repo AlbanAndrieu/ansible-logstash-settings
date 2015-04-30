@@ -30,21 +30,20 @@ fi
 
 if [ -z "${TCP_RANGE}" ]; then
   echo "Undefined parameter: TCP_RANGE, use the default one"
-  export TCP_RANGE="1024-99999"
+  export TCP_RANGE="{{ collectd_custom_tcp_range }}"
 fi
 
 if [ -z "${TCP_TYPE}" ]; then
   echo "Undefined parameter: TCP_TYPE, use the default one"
-  export TCP_TYPE="ESTABLISHED"
+  export TCP_TYPE="{{ collectd_custom_tcp_type }}"
 fi
 
 if [ -z "${USER_NAME}" ]; then
   echo "Undefined parameter: USER_NAME, use the default one"
-  export USER_NAME="jenkins"
+  export USER_NAME="{{ jenkins_user }}"
 fi
 
-#export LOG_DIR="/var/log/logstash"
-export LOG_DIR="/tmp"
+export LOG_DIR="{{ collectd_custom_log_dir }}"
 export FILENAME_BASE="${LOG_DIR}/collectd-custom-$$"
 export FILENAME_EXT=".log"
 FILENAME="${FILENAME_BASE}${FILENAME_EXT}"

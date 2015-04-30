@@ -33,6 +33,7 @@ tomcat_catalina_log_dir: "{{ tomcat_catalina_base_dir }}/logs"
 tomcat_catalina_out: "{{ tomcat_catalina_log_dir }}/catalina.out"
 
 jenkins_home: "/var/lib/jenkins"
+jenkins_user: "jenkins"
 application_dir: ""
 application_user: "{{ user }}"
 application_home: "{{ application_dir }}/home/{{ application_user }}"
@@ -42,3 +43,17 @@ sybase_user: "{{ application_user }}"
 sybase_log_file: "SYBASE.log"
 sybase_version: "ASE-15_0"
 
+# General options
+collectd_interval: 10
+collectd_readthreads: 7
+collectd_hostname: "{{ inventory_hostname }}"
+collectd_fdqnlookup: false
+
+collectd_prefix_custom_dir: "/usr/lib/collectd"
+collectd_custom_tcp_type: "ESTABLISHED"
+collectd_custom_tcp_range: "1024-99999"
+collectd_custom_log_dir: "/tmp"
+
+collectd_jmx_host: "localhost"
+collectd_jmx_port: "1099"
+collectd_connection_host: "{{ collectd_jmx_host }}"
