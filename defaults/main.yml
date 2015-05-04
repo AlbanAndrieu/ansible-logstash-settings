@@ -27,6 +27,9 @@ shell_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have 
 logstash_change_log_dir: "/var/log/"
 logstash_change_log_dir_enabled: no
 
+kibana_root: "/var/www/kibana3"
+kibana_dashboard: "{{ kibana_root }}/app/dashboards"
+
 #tomcat_catalina_home_dir: "/usr/share/tomcat7"
 tomcat_catalina_base_dir: "/var/lib/tomcat7"
 

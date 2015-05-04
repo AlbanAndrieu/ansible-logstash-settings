@@ -16,7 +16,7 @@
 # General options
 Interval     {{ collectd_interval }}
 ReadThreads  {{ collectd_readthreads }}
-TypesDB "{{collectd_prefix}}/share/collectd/types.db"
+#TypesDB "{{collectd_prefix}}/share/collectd/types.db"
 TypesDB "{{collectd_prefix_type}}/types.db"
 {% if collectd_hostname %}Hostname {{ collectd_hostname }}
 {% endif %}
@@ -83,7 +83,7 @@ LoadPlugin syslog
 #LoadPlugin apache
 #LoadPlugin apcups
 #LoadPlugin ascent
-LoadPlugin battery
+##LoadPlugin battery
 #LoadPlugin bind
 #LoadPlugin cgroups
 #LoadPlugin conntrack
@@ -99,8 +99,8 @@ LoadPlugin df
 LoadPlugin disk
 #LoadPlugin dns
 #LoadPlugin email
-LoadPlugin entropy
-LoadPlugin ethstat
+##LoadPlugin entropy
+##LoadPlugin ethstat
 LoadPlugin exec
 #LoadPlugin filecount
 #LoadPlugin fscache
@@ -164,7 +164,7 @@ LoadPlugin tcpconns
 #LoadPlugin tokyotyrant
 #LoadPlugin unixsock
 LoadPlugin uptime
-LoadPlugin users
+##LoadPlugin users
 #LoadPlugin uuid
 #LoadPlugin varnish
 #LoadPlugin vmem

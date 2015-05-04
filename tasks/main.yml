@@ -219,6 +219,8 @@
 
 #TODO
 #ADD Logstash-Search-Nabla in kibana template folder
+#kibana_root: /var/www/kibana3
+#{{ kibana_dashboard }}
 
 - name: Ensure Logstash is started and enabled on boot.
   service: name=logstash state=started enabled=yes
