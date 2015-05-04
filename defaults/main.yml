@@ -54,7 +54,7 @@ collectd_fdqnlookup: false
 
 collectd_prefix_custom_dir: "/usr/lib/collectd"
 collectd_custom_tcp_type: "ESTABLISHED"
-collectd_custom_tcp_range: "1024-99999"
+collectd_custom_tcp_range: "1024-49151"
 collectd_custom_log_dir: "/tmp"
 
 collectd_jmx_host: "localhost"
