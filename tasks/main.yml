@@ -18,7 +18,8 @@
   with_items:
     - 01-lumberjack-input.conf
     - 10-syslog.conf
-    - 30-lumberjack-output.conf
+    - 30-lumberjack-elasticsearch-output.conf
+    #- 30-lumberjack-redis-output.conf
   notify: restart logstash
 
 - name: Create Logstash configuration file for local syslog.
@@ -217,10 +218,17 @@
   when: logstash_monitor_local_collectd
 #  notify: restart collectd
 
-#TODO
-#ADD Logstash-Search-Nabla in kibana template folder
-#kibana_root: /var/www/kibana3
-#{{ kibana_dashboard }}
+- name: Copy the kibana sample
+  copy:
+    src: '{{ item }}'
+    dest: '{{ kibana_dashboard }}/{{ item }}'
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - nabla.json
+    - collectd.json
+  when: kibana_dashboard_enabled
 
 - name: Ensure Logstash is started and enabled on boot.
   service: name=logstash state=started enabled=yes

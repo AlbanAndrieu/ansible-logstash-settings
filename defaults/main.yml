@@ -24,11 +24,15 @@ shell_group: "{{ shell_owner }}"
 #shell_owner_home: "{{ home }}"
 shell_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
 
+logstash_elasticsearch_host: "localhost"
+logstash_redis_host: "localhost"
+
 logstash_change_log_dir: "/var/log/"
 logstash_change_log_dir_enabled: no
 
 kibana_root: "/var/www/kibana3"
 kibana_dashboard: "{{ kibana_root }}/app/dashboards"
+kibana_dashboard_enabled: yes
 
 #tomcat_catalina_home_dir: "/usr/share/tomcat7"
 tomcat_catalina_base_dir: "/var/lib/tomcat7"

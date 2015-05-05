@@ -1,0 +1,9 @@
+#{{ ansible_managed }}
+output {
+  redis {
+    host => {{ logstash_redis_host }}
+     data_type => "list"
+     key => "logstash"
+  }
+  stdout { codec => rubydebug }
+}
