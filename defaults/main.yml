@@ -25,7 +25,7 @@ shell_group: "{{ shell_owner }}"
 shell_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
 
 logstash_elasticsearch_host: "localhost"
-logstash_redis_host: "localhost"
+redis_bind_interface: "127.0.0.1"
 
 logstash_change_log_dir: "/var/log/"
 logstash_change_log_dir_enabled: no

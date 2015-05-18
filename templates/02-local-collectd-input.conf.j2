@@ -12,3 +12,11 @@ input {
   #  type = collectd
   #}
 }
+output {
+  redis {
+    host => "{{ redis_bind_interface }}"
+    data_type => "list"
+    key => "logstash"
+  }
+  stdout { codec => rubydebug }
+}

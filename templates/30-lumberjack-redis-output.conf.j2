@@ -1,9 +1,29 @@
 #{{ ansible_managed }}
-output {
+input {
+#  file {
+#    type => "syslog"
+#    path => [ "/var/log/auth.log", "/var/log/messages", "/var/log/syslog" ]
+#  }
+#  tcp {
+#    port => "5145"
+#    type => "syslog-network"
+#  }
+#  udp {
+#    port => "5145"
+#    type => "syslog-network"
+#  }
   redis {
-    host => {{ logstash_redis_host }}
-     data_type => "list"
-     key => "logstash"
+    host => "{{ redis_bind_interface }}"
+    data_type => "list"
+    key => "logstash"
+    codec => json
   }
-  stdout { codec => rubydebug }
 }
+#output {
+#  redis {
+#    host => "{{ redis_bind_interface }}"
+#     data_type => "list"
+#     key => "logstash"
+#  }
+#  stdout { codec => rubydebug }
+#}

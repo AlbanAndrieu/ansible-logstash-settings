@@ -2,6 +2,7 @@
 #dependencies: []
 dependencies:
   - { role: geerlingguy.logstash }
+  - { role: geerlingguy.redis }
 
 galaxy_info:
   author: Alban Andrieu
