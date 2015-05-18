@@ -17,6 +17,7 @@ output {
     host => "{{ redis_bind_interface }}"
     data_type => "list"
     key => "logstash"
+    codec => json
   }
   stdout { codec => rubydebug }
 }
