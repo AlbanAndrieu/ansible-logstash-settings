@@ -19,7 +19,6 @@
     - 01-lumberjack-input.conf
     - 10-syslog.conf
     - 30-lumberjack-elasticsearch-output.conf
-    #- 30-lumberjack-redis-output.conf
   notify: restart logstash
 
 - name: Create Logstash configuration file for local syslog.
@@ -130,6 +129,16 @@
     group: root
     mode: 0644
   when: logstash_monitor_elasticsearch_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration file for redis.
+  template:
+    src: 05-local-redis-input.conf.j2
+    dest: /etc/logstash/conf.d/05-local-redis-input.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: logstash_monitor_redis_enabled
   notify: restart logstash
 
 - name: Create Logstash configuration file for miscellaneous log.

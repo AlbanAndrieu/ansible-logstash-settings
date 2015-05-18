@@ -10,6 +10,7 @@ logstash_monitor_tomcat_enabled: no
 logstash_monitor_jetty_enabled: no
 logstash_monitor_jboss_enabled: no
 logstash_monitor_elasticsearch_enabled: no
+logstash_monitor_redis_enabled: no
 logstash_monitor_miscellaneous_enabled: no
 logstash_monitor_application_enabled: no
 logstash_monitor_sybase_enabled: no
