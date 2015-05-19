@@ -394,6 +394,10 @@ LoadPlugin uptime
 	FSType tmpfs
 	FSType fusectl
 	FSType cgroup
+#TODO below FSType to be tested
+	FSType fuse.gvfsd-fuse
+	FSType aufs
+	FSType autofs
 	IgnoreSelected true
 
 #	ReportByDevice false
@@ -404,11 +408,11 @@ LoadPlugin uptime
 #	ValuesPercentage false
 </Plugin>
 
-#<Plugin disk>
-#	Disk "hda"
+<Plugin disk>
+    Disk "/^sd[abc]$/"
 #	Disk "/sda[23]/"
-#	IgnoreSelected false
-#</Plugin>
+	IgnoreSelected false
+</Plugin>
 
 #<Plugin dns>
 #	Interface "eth0"
@@ -1344,6 +1348,6 @@ LoadPlugin uptime
 #	Tag "foobar"
 #</Plugin>
 
-<Include "/etc/collectd/collectd.conf.d">
+<Include "{{ collectd_prefix }}/collectd.conf.d">
 	Filter "*.conf"
 </Include>

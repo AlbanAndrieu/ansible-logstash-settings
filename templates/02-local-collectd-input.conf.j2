@@ -1,16 +1,21 @@
 #{{ ansible_managed }}
 input {
 
-  collectd {
-	type => "collectd"
+  #collectd {
+  #  type => "collectd"
+  #}
+  udp {
+    port => 25826         # Must be specified. 25826 is the default for collectd
+    buffer_size => 1452   # Should be specified. 1452 is the default for recent versions of collectd
+    #workers => 3          # Default is 2
+    #queue_size => 30000   # Default is 2000
+    #https://www.elastic.co/guide/en/logstash/current/plugins-codecs-collectd.html
+    codec => collectd { }
+    #codec => collectd { typesdb => [ "/opt/collectd/share/collectd/types.db" ] } # This will invoke the default options for the codec
+    #/opt/collectd/share/collectd/types.db
+    type => "collectd"
   }
 
-  #udp {
-  #  port = 25826         # 25826 matches port specified in collectd.conf
-  #  buffer_size = 1452   # 1452 is the default buffer size for Collectd
-  #  codec = collectd { } # specific Collectd codec to invoke
-  #  type = collectd
-  #}
 }
 output {
   redis {

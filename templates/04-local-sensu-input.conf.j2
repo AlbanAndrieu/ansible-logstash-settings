@@ -1,0 +1,7 @@
+#{{ ansible_managed }}
+input {
+  file {
+    type => "sensu"
+    path => ["/var/log/sensu/*.log"]
+  }
+}

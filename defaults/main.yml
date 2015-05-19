@@ -8,6 +8,7 @@ logstash_monitor_apache_enabled: no
 logstash_monitor_nginx_enabled: no
 logstash_monitor_tomcat_enabled: no
 logstash_monitor_jetty_enabled: no
+logstash_monitor_sensu_enabled: no
 logstash_monitor_jboss_enabled: no
 logstash_monitor_elasticsearch_enabled: no
 logstash_monitor_redis_enabled: no

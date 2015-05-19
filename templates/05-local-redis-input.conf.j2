@@ -1,9 +1,9 @@
 #{{ ansible_managed }}
 input {
-#  file {
-#    type => "syslog"
-#    path => [ "/var/log/auth.log", "/var/log/messages", "/var/log/syslog" ]
-#  }
+  file {
+    type => "redis"
+    path => ["/var/log/redis/*.log"]
+  }
 #  tcp {
 #    port => "5145"
 #    type => "syslog-network"
@@ -19,11 +19,24 @@ input {
     codec => json
   }
 }
-#output {
-#  redis {
-#    host => "{{ redis_bind_interface }}"
-#     data_type => "list"
-#     key => "logstash"
-#  }
-#  stdout { codec => rubydebug }
-#}
+filter {
+  if [type] == "redis" {
+    grok {
+      match => {
+        "message" => "\[%{POSINT:pid}\] %{REDISTIMESTAMP:timestamp} \# %{GREEDYDATA:message}"
+      }
+      overwrite => "message"
+    }
+
+    date {
+      match => ["timestamp", "dd MMM HH:mm:ss.SSS"]
+      remove_field => ["timestamp"]
+    }
+  }
+}
+output {
+  elasticsearch {
+    host => {{ logstash_elasticsearch_host }}
+  }
+  stdout { codec => rubydebug }
+}
