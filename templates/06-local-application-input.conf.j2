@@ -89,6 +89,19 @@ input {
 }
 
 filter {
+
+   #if [type] == "app-log" {
+   #  grok {
+   #     patterns_dir => "./patterns"
+   #     match => ["message","%{LOG_DATE:log_date} \[%{NOTSPACE:thread}\] %{LOGLEVEL:log_level} %{NOTSPACE:classname} %{GREEDYDATA:log_msg}"]
+   #  }
+   #  if [classname] =~ /SellRequest$/ {
+   #     mutate { add_tag => "sell" }
+   #  } else if [classname] =~ /SearchRequest$/ {
+   #     mutate { add_tag => "search" }
+   #  }
+   #}
+
   if [type] == "log4j" {
     multiline {
       pattern => "^%{TIMESTAMP_ISO8601}%{SPACE}%{LOGLEVEL:level}%{SPACE}"

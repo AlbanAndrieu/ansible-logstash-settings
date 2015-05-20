@@ -206,6 +206,19 @@
 #sudo chmod 777 /var/log/upstart/docker.log
 #sudo find /var/log/ -type f -name '*\.log' | xargs sudo chmod 755 $1
 #TODO
+#Add the logstash user to the same group as syslog
+#sudo usermod -a -G adm logstash
+#sudo apt-get install -y acl
+#Set an ACL entry on the relevant logs, like so:
+## Single log
+#setfacl -m u:logstash:r /var/log/redis/redis-server.log
+## Directory of logs
+#setfacl -R -m u:logstash:r /var/log/upstart
+## Remove ACL entry
+#setfacl -x u:logstash /var/log/syslog
+## View ACL entries
+#getfacl /var/log/syslog
+####
 #setfacl -R -m u:logstash:r-x /var/log/
 
 - name: Update log rights
@@ -246,6 +259,8 @@
     mode: 0644
   when: logstash_monitor_local_collectd
 #  notify: restart collectd
+
+#see https://github.com/vspiewak/elk-devops-day-2014/tree/master/demo-all
 
 - name: Copy the kibana sample
   copy:

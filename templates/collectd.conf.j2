@@ -89,7 +89,7 @@ LoadPlugin syslog
 #LoadPlugin conntrack
 #LoadPlugin contextswitch
 LoadPlugin cpu
-#LoadPlugin cpufreq
+LoadPlugin cpufreq
 #LoadPlugin csv
 #LoadPlugin curl
 #LoadPlugin curl_json
@@ -164,7 +164,7 @@ LoadPlugin tcpconns
 #LoadPlugin tokyotyrant
 #LoadPlugin unixsock
 LoadPlugin uptime
-##LoadPlugin users
+LoadPlugin users
 #LoadPlugin uuid
 #LoadPlugin varnish
 #LoadPlugin vmem
@@ -503,7 +503,6 @@ LoadPlugin uptime
 
 <Plugin java>
 	JVMArg "-verbose:jni"
-#	JVMArg "-Djava.class.path=/usr/share/collectd/java/collectd-api.jar"
     JVMArg "-Djava.class.path=/usr/share/collectd/java/collectd-api.jar:/usr/share/collectd/java/generic-jmx.jar"
 
 	LoadPlugin "org.collectd.java.GenericJMX"
@@ -511,6 +510,32 @@ LoadPlugin uptime
       ################
       # MBean blocks #
       ################
+      # OS
+      <MBean "os">
+        ObjectName "java.lang:type=OperatingSystem"
+        <Value>
+          Type "gauge"
+          InstancePrefix "process_cpu_load"
+          Attribute "ProcessCpuLoad"
+        </Value>
+        <Value>
+          Type "gauge"
+          InstancePrefix "system_cpu_load"
+          Attribute "SystemCpuLoad"
+        </Value>
+      </MBean>
+
+      # Threads
+      <MBean "threading">
+        ObjectName "java.lang:type=Threading"
+        <Value>
+          Type "gauge"
+          InstancePrefix "thread_count"
+          Table false
+          Attribute "ThreadCount"
+        </Value>
+      </MBean>
+
       # Number of classes being loaded.
       <MBean "classes">
         ObjectName "java.lang:type=ClassLoading"
@@ -581,10 +606,36 @@ LoadPlugin uptime
       ######################################
 
       # Generic heap/nonheap memory usage.
-      <MBean "memory">
+      #<MBean "memory">
+      #  ObjectName "java.lang:type=Memory"
+      #  #InstanceFrom ""
+      #  InstancePrefix "memory"
+      #
+      #  # Creates four values: committed, init, max, used
+      #  <Value>
+      #    Type "jmx_memory"
+      #    #InstancePrefix ""
+      #    #InstanceFrom ""
+      #    Table true
+      #    Attribute "HeapMemoryUsage"
+      #    InstancePrefix "heap-"
+      #  </Value>
+      #
+      #  # Creates four values: committed, init, max, used
+      #  <Value>
+      #    Type "jmx_memory"
+      #    #InstancePrefix ""
+      #    #InstanceFrom ""
+      #    Table true
+      #    Attribute "NonHeapMemoryUsage"
+      #    InstancePrefix "nonheap-"
+      #  </Value>
+      #</MBean>
+      # Heap memory usage
+      <MBean "memory-heap">
         ObjectName "java.lang:type=Memory"
         #InstanceFrom ""
-        InstancePrefix "memory"
+        InstancePrefix "memory-heap"
 
         # Creates four values: committed, init, max, used
         <Value>
@@ -593,8 +644,14 @@ LoadPlugin uptime
           #InstanceFrom ""
           Table true
           Attribute "HeapMemoryUsage"
-          InstancePrefix "heap-"
         </Value>
+      </MBean>
+
+      # Non-heap memory usage
+      <MBean "memory-nonheap">
+        ObjectName "java.lang:type=Memory"
+        #InstanceFrom ""
+        InstancePrefix "memory-nonheap"
 
         # Creates four values: committed, init, max, used
         <Value>
@@ -603,7 +660,6 @@ LoadPlugin uptime
           #InstanceFrom ""
           Table true
           Attribute "NonHeapMemoryUsage"
-          InstancePrefix "nonheap-"
         </Value>
       </MBean>
 
@@ -718,10 +774,14 @@ LoadPlugin uptime
         User "monitorRole"
         Password "queeZie1"
         Host "{{ collectd_connection_host }}"
+        Collect "os"
+        Collect "threading"
         Collect "classes"
         Collect "compilation"
         Collect "garbage_collector"
-        Collect "memory"
+        #Collect "memory"
+        Collect "memory-heap"
+        Collect "memory-nonheap"
         Collect "memory_pool"
       </Connection>
     </Plugin>
