@@ -17,6 +17,7 @@ input {
   }
 
 }
+{% if logstash_monitor_redis_enabled %}
 output {
   redis {
     host => "{{ redis_bind_interface }}"
@@ -26,3 +27,4 @@ output {
   }
   stdout { codec => rubydebug }
 }
+{% endif %}

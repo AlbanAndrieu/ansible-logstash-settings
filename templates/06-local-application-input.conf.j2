@@ -141,7 +141,6 @@ filter {
   #    drop { }
   #}
 }
-
 #filter {
 #  grok {
 ##    type => "log4j"
@@ -157,3 +156,14 @@ filter {
 #
 #  mutate { replace => { type => "{{ application_name }}" } }
 #}
+{% if logstash_monitor_redis_enabled %}
+output {
+  redis {
+    host => "{{ redis_bind_interface }}"
+    data_type => "list"
+    key => "logstash"
+    codec => json
+  }
+  stdout { codec => rubydebug }
+}
+{% endif %}

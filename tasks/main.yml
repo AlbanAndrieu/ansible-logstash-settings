@@ -18,7 +18,6 @@
   with_items:
     - 01-lumberjack-input.conf
     - 10-syslog.conf
-    #- 30-lumberjack-elasticsearch-output.conf
   notify: restart logstash
 
 - name: Create Logstash configuration file for local syslog.
@@ -33,12 +32,12 @@
 
 - name: Install collectd
   apt: pkg={{ item }} state=present update_cache=yes
-  sudo: yes  
+  sudo: yes
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
   tags: package
   with_items:
    - collectd
-   
+
 - name: Create Logstash configuration file for collectd syslog.
   template:
     src: 02-local-collectd-input.conf.j2
@@ -128,7 +127,7 @@
     mode: 0644
   when: logstash_monitor_sensu_enabled
   notify: restart logstash
-  
+
 - name: Create Logstash configuration file for jboss syslog.
   template:
     src: 04-local-jboss-input.conf.j2
@@ -149,6 +148,11 @@
   when: logstash_monitor_elasticsearch_enabled
   notify: restart logstash
 
+# Flush all the redis db
+- name: Empty redis database.
+  redis: command=flush flush_mode=all
+  when: logstash_monitor_redis_enabled
+
 - name: Create Logstash configuration file for redis.
   template:
     src: 05-local-redis-input.conf.j2
@@ -157,6 +161,18 @@
     group: root
     mode: 0644
   when: logstash_monitor_redis_enabled
+  notify: restart logstash
+
+- name: Create Logstash configuration files when redis not used.
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/logstash/conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - 30-lumberjack-elasticsearch-output.conf
+  when: (logstash_monitor_redis_enabled == false)
   notify: restart logstash
 
 - name: Create Logstash configuration file for miscellaneous log.

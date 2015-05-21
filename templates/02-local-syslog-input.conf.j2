@@ -2,12 +2,23 @@
 input {
 
   file {
-    type => "syslog"  
+    type => "syslog"
     path => "/var/log/messages"
   }
-    
+
   file {
-    type => "syslog"  
-    path => "{{ logstash_local_syslog_path }}"  
+    type => "syslog"
+    path => "{{ logstash_local_syslog_path }}"
   }
 }
+{% if logstash_monitor_redis_enabled %}
+output {
+  redis {
+    host => "{{ redis_bind_interface }}"
+    data_type => "list"
+    key => "logstash"
+    codec => json
+  }
+  stdout { codec => rubydebug }
+}
+{% endif %}
