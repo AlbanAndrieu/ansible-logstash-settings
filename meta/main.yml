@@ -3,6 +3,7 @@
 dependencies:
   - { role: geerlingguy.logstash }
   - { role: geerlingguy.redis }
+  - { role: geerlingguy.kibana }
 
 galaxy_info:
   author: Alban Andrieu
