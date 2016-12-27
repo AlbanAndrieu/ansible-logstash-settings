@@ -276,6 +276,20 @@
   when: logstash_monitor_local_collectd
 #  notify: restart collectd
 
+# Install Elasticsearch head plugin
+- elasticsearch_plugin: state=present name="mobz/elasticsearch-head"
+
+# Install specific version of a plugin
+- elasticsearch_plugin: state=present name="com.github.kzwang/elasticsearch-image"
+#version="1.2.0"
+
+# Install Elasticsearch head plugin
+- kibana_plugin: state=present name="elasticsearch/marvel"
+
+# Install specific version of a plugin
+- kibana_plugin: state=present name="elasticsearch/marvel" v
+#ersion="2.3.3"
+
 #see https://github.com/vspiewak/elk-devops-day-2014/tree/master/demo-all
 
 - name: Copy the kibana sample

@@ -6,7 +6,7 @@ env:
   #- ANSIBLE_VERSION=1.5
   #- ANSIBLE_VERSION=1.6
   #- ANSIBLE_VERSION=1.7
-  - ANSIBLE_VERSION=1.8 SITE=test.yml
+  - ANSIBLE_VERSION=2.1.1 SITE=test.yml
 
 before_install:
   - sudo apt-get update -qq
@@ -26,14 +26,14 @@ install:
 
 script:
   # Check the role/playbook's syntax.
-  - "ansible-playbook -i tests/inventory tests/$SITE --syntax-check"
+  - "sudo ansible-playbook -i tests/inventory tests/$SITE --syntax-check"
 
   # Run the role/playbook with ansible-playbook.
-  - "ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo"
+  - "sudo ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo
+    sudo ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
