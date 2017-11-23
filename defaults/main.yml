@@ -24,7 +24,8 @@ shell_group: "{{ shell_owner }}"
 ##home: '~' #please override me
 #home: "{{ lookup('env','HOME') }}"
 #shell_owner_home: "{{ home }}"
-shell_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
+#shell_dir_tmp: "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
+shell_dir_tmp: "{{ tempdir.stdout }}"
 
 logstash_elasticsearch_host: "localhost"
 redis_bind_interface: "127.0.0.1"
